@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Zbor Igra</title>
+<meta name="description" content="A Macedonian word game: match, pick and build your way through 17 units.">
+<meta name="theme-color" content="#5e0b0d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Zbor Igra">
+<style>/* Layout: one phone-width column on a crimson field (the flag), cream cards; home = player card, play buttons, zigzag unit map. Rounds take over the screen. Deliberately single-theme. */
+:root{
+  --bg:#8e1414;
+  --bg-deep:#5e0b0d;
+  --on-bg:#fff3d6;
+  --on-bg-muted:#f2c9a8;
+  --card:#fff6e3;
+  --card-2:#fdecc8;
+  --ink:#2b1608;
+  --muted:#86634c;
+  --line:#ebd6b0;
+  --gold:#ffc929;
+  --gold-deep:#c98b00;
+  --good:#1d9450;
+  --good-soft:#d8f3e2;
+  --bad:#d8322a;
+  --bad-soft:#ffe0da;
+  --lock:#b98d80;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI Rounded",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--bg-deep);background-image:radial-gradient(120% 70% at 50% 0%, var(--bg) 0%, var(--bg-deep) 100%);background-attachment:fixed;color:var(--on-bg);font-family:var(--font);font-size:16px;line-height:1.4;-webkit-user-select:none;user-select:none;overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none;padding:0}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{max-width:520px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;min-height:100%}
+svg{display:block}
+.num{font-variant-numeric:tabular-nums}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 18px;border-radius:18px;font-weight:900;font-size:1.08rem;letter-spacing:.01em;background:var(--gold);color:var(--ink);box-shadow:0 5px 0 var(--gold-deep);transition:transform .08s, box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--gold-deep)}
+.btn.cream{background:var(--card);box-shadow:0 5px 0 var(--line)}
+.btn.cream:active{box-shadow:0 1px 0 var(--line)}
+.btn.good{background:var(--good);color:#fff;box-shadow:0 5px 0 #0f6a36}
+.btn.danger{background:var(--bad);color:#fff;box-shadow:0 5px 0 #8f1a14}
+.btn:disabled{opacity:.5;transform:none}
+.btn small{font-weight:700;opacity:.75;font-size:.85rem}
+
+/* top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:900;font-size:1.15rem;letter-spacing:.01em}
+.brand small{display:block;font-weight:700;font-size:.72rem;color:var(--on-bg-muted);letter-spacing:.04em}
+.iconbtn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.12);display:grid;place-items:center}
+.iconbtn svg{width:22px;height:22px}
+
+/* player card */
+.player{background:var(--card);color:var(--ink);border-radius:24px;padding:16px;display:grid;gap:12px;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.prow{display:flex;align-items:center;gap:14px}
+.medal{width:62px;height:62px;flex:none;border-radius:50%;background:var(--gold);box-shadow:inset 0 -5px 0 var(--gold-deep), 0 0 0 4px var(--card-2);display:grid;place-items:center;font-weight:900;font-size:1.6rem;color:var(--ink)}
+.ptitle{min-width:0;flex:1}
+.ptitle b{display:block;font-size:1.15rem;font-weight:900}
+.ptitle span{font-weight:700;color:var(--muted);font-size:.85rem}
+.xpbar{height:14px;border-radius:7px;background:var(--line);overflow:hidden;margin-top:6px}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#ffdf70);border-radius:7px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{background:var(--card-2);border-radius:14px;padding:8px 6px;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:900;font-size:1rem;min-width:0}
+.chip svg{width:20px;height:20px;flex:none}
+.chip span{font-weight:700;font-size:.72rem;color:var(--muted);display:block;line-height:1}
+.chip > div{min-width:0}
+
+.playrow{display:grid;gap:12px;margin:16px 0 6px}
+.blitz{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);border-radius:20px;padding:12px 14px}
+.blitz b{display:block;font-weight:900;font-size:1.05rem}
+.blitz span{font-weight:700;color:var(--on-bg-muted);font-size:.85rem}
+.blitz .btn{width:auto;padding:11px 16px;font-size:.98rem}
+
+/* map */
+.maph{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 6px;font-weight:900;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--on-bg-muted)}
+.map{position:relative;display:grid;gap:4px;padding-block:6px}
+.stop{display:flex;flex-direction:column;align-items:center;width:132px;gap:4px;position:relative}
+.stop.l{justify-self:start;margin-left:12%}
+.stop.c{justify-self:center}
+.stop.r{justify-self:end;margin-right:12%}
+.node{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:1.5rem;background:var(--card);color:var(--ink);box-shadow:0 7px 0 var(--line), 0 0 0 5px rgba(255,255,255,.08);transition:transform .1s}
+.node:active{transform:translateY(5px);box-shadow:0 2px 0 var(--line)}
+.node.cur{background:var(--gold);box-shadow:0 7px 0 var(--gold-deep), 0 0 0 7px rgba(255,201,41,.3);animation:bob 1.8s ease-in-out infinite}
+.node.done3{background:var(--good);color:#fff;box-shadow:0 7px 0 #0f6a36}
+.node.locked{background:rgba(255,255,255,.1);color:var(--lock);box-shadow:0 7px 0 rgba(0,0,0,.2)}
+.node svg{width:30px;height:30px}
+.stars{display:flex;gap:2px}
+.stars svg{width:18px;height:18px}
+.sname{font-weight:800;font-size:.82rem;text-align:center;line-height:1.15;color:var(--on-bg)}
+.stop.lockd .sname{color:var(--lock)}
+.tag-cur{position:absolute;top:-30px;background:var(--card);color:var(--ink);font-weight:900;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:10px;white-space:nowrap}
+.tag-cur::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:var(--card)}
+.trail{position:absolute;inset:0;pointer-events:none;z-index:0}
+.stop{z-index:1}
+@keyframes bob{50%{transform:translateY(-5px)}}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(30,5,5,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+.sheet{background:var(--card);color:var(--ink);width:100%;max-width:520px;border-radius:26px 26px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:86%;overflow:auto;animation:up .2s cubic-bezier(.2,.8,.2,1)}
+.sheet h2{margin:0;font-size:1.4rem;font-weight:900}
+.sheet .sub{color:var(--muted);font-weight:700;margin:2px 0 12px}
+.sheet .row{display:flex;gap:10px;margin-bottom:14px}
+.sheet .row > div{flex:1;background:var(--card-2);border-radius:14px;padding:8px 10px;text-align:center;font-weight:900}
+.sheet .row span{display:block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.wl{list-style:none;margin:14px 0 0;padding:0;border-top:2px solid var(--line)}
+.wl li{display:flex;justify-content:space-between;gap:12px;padding:8px 2px;border-bottom:1px solid var(--line)}
+.wl li > div{min-width:0}
+.wl .en{color:var(--muted);font-weight:700;text-align:right;font-size:.9rem}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:-6px auto 12px}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@keyframes fade{from{opacity:0}}
+
+/* Macedonian text */
+.mk{font-weight:900}
+.cy{display:block;font-weight:700;font-size:.72em;color:var(--muted);margin-top:1px}
+.hide-cyr .cy{display:none!important}
+
+/* round HUD */
+.hud{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.quit{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.12)}
+.quit svg{width:18px;height:18px}
+.hearts{display:flex;gap:3px}
+.hearts svg{width:24px;height:24px;transition:transform .2s}
+.hearts .lost{opacity:.3;transform:scale(.8)}
+.hearts .hit{animation:hit .5s}
+.rprog{flex:1;height:12px;border-radius:6px;background:rgba(0,0,0,.25);overflow:hidden}
+.rprog i{display:block;height:100%;background:var(--card);border-radius:6px;transition:width .3s}
+.scorebox{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;min-height:34px}
+.score{font-weight:900;font-size:1.5rem}
+.score small{font-size:.75rem;font-weight:800;color:var(--on-bg-muted);letter-spacing:.06em;text-transform:uppercase;margin-left:4px}
+.combo{display:flex;align-items:center;gap:4px;background:var(--gold);color:var(--ink);font-weight:900;padding:4px 12px;border-radius:99px;font-size:1rem;opacity:0;transform:scale(.7);transition:opacity .2s, transform .2s}
+.combo.on{opacity:1;transform:scale(1)}
+.combo.pulse{animation:pulse .35s}
+.combo svg{width:16px;height:16px}
+.timer{height:8px;border-radius:4px;background:rgba(0,0,0,.25);overflow:hidden;margin-bottom:16px}
+.timer i{display:block;height:100%;width:100%;background:var(--gold);border-radius:4px}
+.timer i.low{background:#ff7a4d}
+.floater{position:fixed;left:50%;top:38%;transform:translateX(-50%);font-weight:900;font-size:2rem;color:var(--gold);text-shadow:0 3px 0 rgba(0,0,0,.25);pointer-events:none;animation:floatup .9s forwards;z-index:30}
+@keyframes floatup{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-50px) scale(1)}}
+@keyframes pulse{50%{transform:scale(1.25)}}
+@keyframes hit{30%{transform:scale(1.4) rotate(-12deg)}}
+
+/* challenge card */
+.qlabel{font-weight:900;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--on-bg-muted);margin:0 0 8px}
+.qcard{background:var(--card);color:var(--ink);border-radius:24px;padding:24px 16px;text-align:center;margin-bottom:16px;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.qcard .big{font-size:clamp(1.8rem,8.5vw,2.6rem);font-weight:900;line-height:1.15;overflow-wrap:anywhere}
+.qcard .big.s{font-size:clamp(1.25rem,5.8vw,1.75rem)}
+.qcard .big .cy{font-size:.5em;margin-top:6px}
+.qcard .en{font-weight:800;font-size:1.15rem;color:var(--muted);margin-top:6px}
+.qcard .eq{font-weight:900;color:var(--muted);margin:6px 0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts.one{grid-template-columns:1fr}
+.opt{background:var(--card);color:var(--ink);border-radius:18px;padding:14px 10px;min-height:66px;font-weight:900;font-size:1.05rem;box-shadow:0 5px 0 var(--line);transition:transform .08s;min-width:0;overflow-wrap:anywhere}
+.opt:active{transform:translateY(4px);box-shadow:0 1px 0 var(--line)}
+.opt.right{background:var(--good);color:#fff;box-shadow:0 5px 0 #0f6a36;animation:pulse .3s}
+.opt.right .cy{color:#d5f5e2}
+.opt.wrong{background:var(--bad);color:#fff;box-shadow:0 5px 0 #8f1a14;animation:shake .35s}
+.opt.wrong .cy{color:#ffd9d4}
+.opt.dim{opacity:.45}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tf .opt{min-height:78px;font-size:1.25rem}
+.gap{display:inline-block;min-width:2.8em;border-bottom:4px solid var(--gold);line-height:1}
+.gap.ok{border-color:var(--good);color:var(--good)}
+
+/* match */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col{display:grid;gap:10px;align-content:start;min-width:0}
+.tile{background:var(--card);color:var(--ink);border-radius:16px;padding:10px 8px;min-height:62px;font-weight:900;box-shadow:0 5px 0 var(--line);transition:opacity .25s, transform .12s;overflow-wrap:anywhere}
+.tile.sel{background:var(--gold);box-shadow:0 5px 0 var(--gold-deep);transform:translateY(-2px)}
+.tile.ok{background:var(--good);color:#fff;box-shadow:0 5px 0 #0f6a36;opacity:0;transform:scale(.85);pointer-events:none}
+.tile.bad{background:var(--bad);color:#fff;box-shadow:0 5px 0 #8f1a14;animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* build */
+.line{min-height:70px;border-bottom:3px dashed rgba(255,255,255,.35);display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 12px;margin-bottom:16px;align-content:flex-start}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px}
+.wt{background:var(--card);color:var(--ink);border-radius:14px;padding:8px 12px;font-weight:900;box-shadow:0 4px 0 var(--line);line-height:1.15}
+.wt .cy{font-size:.7rem}
+.wt.used{visibility:hidden}
+
+/* feedback panel */
+.fb{position:fixed;left:0;right:0;bottom:0;z-index:15;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0;animation:up .18s cubic-bezier(.2,.8,.2,1)}
+.fb .in{max-width:520px;margin:0 auto;display:grid;gap:10px}
+.fb.no{background:var(--bad-soft);color:var(--ink)}
+.fb.ok{background:var(--good-soft);color:var(--ink)}
+.fb h3{margin:0;font-size:1.2rem;font-weight:900}
+.fb.no h3{color:var(--bad)}
+.fb.ok h3{color:var(--good)}
+.fb p{margin:0;font-weight:700}
+.fb .ans{font-size:1.1rem}
+
+/* results */
+.res{text-align:center;padding-top:20px;display:grid;gap:14px}
+.res h1{margin:0;font-size:2.2rem;font-weight:900;letter-spacing:.01em}
+.res .sub{margin:0;color:var(--on-bg-muted);font-weight:800}
+.bigstars{display:flex;justify-content:center;gap:6px;margin:4px 0}
+.bigstars svg{width:64px;height:64px}
+.bigstars .s2{transform:translateY(-14px)}
+.bigstars .pop{animation:starpop .45s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes starpop{from{transform:scale(0) rotate(-40deg);opacity:0}}
+.bigstars .s2.pop{animation-name:starpop2}
+@keyframes starpop2{from{transform:translateY(-14px) scale(0) rotate(-40deg);opacity:0}to{transform:translateY(-14px)}}
+.rcard{background:var(--card);color:var(--ink);border-radius:22px;padding:14px;display:grid;gap:12px;text-align:left;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.rstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rstats div{background:var(--card-2);border-radius:14px;padding:8px 4px;text-align:center;font-weight:900;font-size:1.25rem}
+.rstats span{display:block;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lvup{background:var(--gold);color:var(--ink);border-radius:18px;padding:12px 14px;font-weight:900;animation:pulse .6s .3s}
+.unlock{background:var(--good);color:#fff;border-radius:18px;padding:12px 14px;font-weight:900}
+.newb{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.newb div{display:flex;align-items:center;gap:6px;background:var(--card-2);border-radius:12px;padding:6px 10px;font-weight:900;font-size:.9rem;color:var(--ink)}
+.newb svg{width:20px;height:20px}
+.miss h3{margin:0 0 4px;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.miss ul{list-style:none;margin:0;padding:0}
+.miss li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.miss li > div{min-width:0}
+.miss .en{color:var(--muted);font-weight:700;text-align:right}
+.acts{display:grid;gap:12px;margin-top:4px}
+
+/* badges + settings */
+.ph{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ph h1{margin:0;font-size:1.5rem;font-weight:900}
+.bgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.badge{background:var(--card);color:var(--ink);border-radius:18px;padding:14px 12px;display:grid;gap:6px;justify-items:center;text-align:center;box-shadow:0 5px 0 rgba(0,0,0,.18);min-width:0}
+.badge .ic{width:56px;height:56px;border-radius:50%;background:var(--gold);box-shadow:inset 0 -4px 0 var(--gold-deep);display:grid;place-items:center}
+.badge .ic svg{width:30px;height:30px}
+.badge b{font-weight:900}
+.badge span{font-size:.8rem;font-weight:700;color:var(--muted);line-height:1.25}
+.badge.off{background:rgba(255,255,255,.08);color:var(--on-bg-muted);box-shadow:none}
+.badge.off .ic{background:rgba(255,255,255,.12);box-shadow:none}
+.badge.off span{color:var(--on-bg-muted);opacity:.8}
+.panel{background:var(--card);color:var(--ink);border-radius:20px;padding:14px;display:grid;gap:10px;margin-bottom:12px}
+.panel h2{margin:0;font-size:1.05rem;font-weight:900}
+.panel p{margin:0;font-weight:600;color:var(--muted);font-size:.92rem;-webkit-user-select:text;user-select:text}
+.panel ol{margin:0;padding-left:20px;font-weight:700;display:grid;gap:4px}
+.srow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.srow b{display:block}
+.switch{width:52px;height:32px;border-radius:16px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.switch[aria-pressed="true"]{background:var(--good)}
+.switch[aria-pressed="true"]::after{transform:translateX(20px)}
+textarea{width:100%;min-height:84px;border-radius:14px;border:2px solid var(--line);padding:10px;font:inherit;font-size:.8rem;color:var(--ink);background:#fff;-webkit-user-select:text;user-select:text;resize:vertical}
+.note{font-weight:800;font-size:.88rem}
+.note.ok{color:var(--good)}
+.note.no{color:var(--bad)}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:40;background:var(--card);color:var(--ink);border-radius:16px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-weight:900;box-shadow:0 8px 24px rgba(0,0,0,.3);animation:toast 2.8s forwards;max-width:calc(100% - 32px)}
+.toast svg{width:26px;height:26px;flex:none}
+.toast span{display:block;font-size:.78rem;color:var(--muted);font-weight:700}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,-20px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-20px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.wrap{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}</style>
+</head><body>
+<div class="wrap" id="app"></div>
+<script>const UNITS = [
+  { id:"greet", name:"Greetings", words:[
+    ["zdravo","здраво","hello"],["dobro utro","добро утро","good morning"],
+    ["blagodaram","благодарам","thank you"],["te molam","те молам","please"],
+    ["da","да","yes"],["ne","не","no"],
+    ["izvini","извини","sorry"],["prijatno","пријатно","goodbye"]
+  ], sentences:[
+    ["Kako si?","Како си?","How are you?"],
+    ["Dobro sum, blagodaram.","Добро сум, благодарам.","I'm good, thank you."],
+    ["Kako se vikash?","Како се викаш?","What's your name?"],
+    ["Jas se vikam Marko.","Јас се викам Марко.","My name is Marko."],
+    ["Mi e drago.","Ми е драго.","Nice to meet you."],
+    ["Od kade si?","Од каде си?","Where are you from?"],
+    ["Jas sum turist.","Јас сум турист.","I'm a tourist."],
+    ["Se gledame!","Се гледаме!","See you!"]
+  ]},
+  { id:"family", name:"Family", words:[
+    ["majka","мајка","mother"],["tatko","татко","father"],
+    ["brat","брат","brother"],["sestra","сестра","sister"],
+    ["baba","баба","grandmother"],["dedo","дедо","grandfather"],
+    ["sin","син","son"],["kjerka","ќерка","daughter"]
+  ], sentences:[
+    ["Ova e mojata majka.","Ова е мојата мајка.","This is my mother."],
+    ["Imam eden brat.","Имам еден брат.","I have one brother."],
+    ["Imam dve sestri.","Имам две сестри.","I have two sisters."],
+    ["Kade e tatko ti?","Каде е татко ти?","Where is your father?"],
+    ["Baba mi e doma.","Баба ми е дома.","My grandmother is at home."],
+    ["Dali imash deca?","Дали имаш деца?","Do you have children?"]
+  ]},
+  { id:"food", name:"Food & drink", words:[
+    ["leb","леб","bread"],["voda","вода","water"],
+    ["mleko","млеко","milk"],["sirenje","сирење","cheese"],
+    ["jabolko","јаболко","apple"],["kafe","кафе","coffee"],
+    ["meso","месо","meat"],["vino","вино","wine"]
+  ], sentences:[
+    ["Edno kafe, te molam.","Едно кафе, те молам.","One coffee, please."],
+    ["Sakam voda.","Сакам вода.","I want water."],
+    ["Imate li leb?","Имате ли леб?","Do you have bread?"],
+    ["Kolku chini?","Колку чини?","How much is it?"],
+    ["Ova e mnogu vkusno.","Ова е многу вкусно.","This is very tasty."],
+    ["Ne pijam vino.","Не пијам вино.","I don't drink wine."],
+    ["Na zdravje!","На здравје!","Cheers!"]
+  ]},
+  { id:"num", name:"Numbers 1–10", words:[
+    ["eden","еден","one"],["dva","два","two"],["tri","три","three"],
+    ["chetiri","четири","four"],["pet","пет","five"],["shest","шест","six"],
+    ["sedum","седум","seven"],["osum","осум","eight"],
+    ["devet","девет","nine"],["deset","десет","ten"]
+  ], sentences:[]},
+  { id:"home", name:"Around the house", words:[
+    ["kukja","куќа","house"],["masa","маса","table"],
+    ["vrata","врата","door"],["kniga","книга","book"],
+    ["kuche","куче","dog"],["machka","мачка","cat"],
+    ["prozorec","прозорец","window"],["stol","стол","chair"]
+  ], sentences:[
+    ["Ova e mojata kukja.","Ова е мојата куќа.","This is my house."],
+    ["Imam machka.","Имам мачка.","I have a cat."],
+    ["Kucheto e doma.","Кучето е дома.","The dog is at home."],
+    ["Knigata e na masata.","Книгата е на масата.","The book is on the table."],
+    ["Otvori ja vratata.","Отвори ја вратата.","Open the door."],
+    ["Kade e kucheto?","Каде е кучето?","Where is the dog?"]
+  ]},
+  { id:"around", name:"Getting around", words:[
+    ["kako","како","how"],["kade","каде","where"],["koga","кога","when"],
+    ["shto","што","what"],["koj","кој","who"],["zoshto","зошто","why"],
+    ["levo","лево","left"],["desno","десно","right"],["pravo","право","straight ahead"]
+  ], sentences:[
+    ["Kade e toaletot?","Каде е тоалетот?","Where is the toilet?"],
+    ["Kade e avtobuskata stanica?","Каде е автобуската станица?","Where is the bus station?"],
+    ["Odete pravo.","Одете право.","Go straight ahead."],
+    ["Svrtete levo.","Свртете лево.","Turn left."],
+    ["Ne razbiram.","Не разбирам.","I don't understand."],
+    ["Zboruvate li angliski?","Зборувате ли англиски?","Do you speak English?"],
+    ["Poleka, te molam.","Полека, те молам.","Slowly, please."]
+  ]},
+  { id:"time", name:"Days & plans", words:[
+    ["denes","денес","today"],["utre","утре","tomorrow"],["vchera","вчера","yesterday"],
+    ["sega","сега","now"],["utro","утро","morning"],["vecher","вечер","evening"],
+    ["ponedelnik","понеделник","Monday"],["petok","петок","Friday"]
+  ], sentences:[
+    ["Shto pravish denes?","Што правиш денес?","What are you doing today?"],
+    ["Utre sum doma.","Утре сум дома.","Tomorrow I'm at home."],
+    ["Kje se vidime vo petok.","Ќе се видиме во петок.","See you on Friday."],
+    ["Kolku e chasot?","Колку е часот?","What time is it?"],
+    ["Dojdi na kafe utre.","Дојди на кафе утре.","Come for coffee tomorrow."],
+    ["Sega sum zafaten.","Сега сум зафатен.","I'm busy right now."]
+  ]},
+  { id:"verbs", name:"Everyday actions", words:[
+    ["sakam","сакам","I want / I like"],["imam","имам","I have"],["odam","одам","I go"],
+    ["jadam","јадам","I eat"],["pijam","пијам","I drink"],["zboruvam","зборувам","I speak"],
+    ["rabotam","работам","I work"],["spijam","спијам","I sleep"],["chitam","читам","I read"]
+  ], sentences:[
+    ["Odam na rabota.","Одам на работа.","I'm going to work."],
+    ["Jadam leb so sirenje.","Јадам леб со сирење.","I'm eating bread with cheese."],
+    ["Zboruvam malku makedonski.","Зборувам малку македонски.","I speak a little Macedonian."],
+    ["Rabotam vo Skopje.","Работам во Скопје.","I work in Skopje."],
+    ["Sakam da spijam.","Сакам да спијам.","I want to sleep."],
+    ["Chitam kniga.","Читам книга.","I'm reading a book."]
+  ]},
+  { id:"talk", name:"Keeping a conversation going", words:[
+    ["izvinete","извинете","excuse me"],["povtorete","повторете","repeat (please)"],
+    ["razbiram","разбирам","I understand"],["znam","знам","I know"],
+    ["mozhe","може","OK / it's possible"],["sekako","секако","of course"],
+    ["nema problem","нема проблем","no problem"],["dobredojde","добредојде","welcome"]
+  ], sentences:[
+    ["Izvinete, ne razbiram.","Извинете, не разбирам.","Excuse me, I don't understand."],
+    ["Mozhete li da povtorite?","Можете ли да повторите?","Can you repeat that?"],
+    ["Shto znachi ova?","Што значи ова?","What does this mean?"],
+    ["Ne znam.","Не знам.","I don't know."],
+    ["Sekako, so zadovolstvo.","Секако, со задоволство.","Of course, with pleasure."],
+    ["Dobredojdovte!","Добредојдовте!","Welcome! (to a group)"]
+  ]},
+  { id:"describe", name:"Colours & describing", words:[
+    ["crven","црвен","red"],["zelen","зелен","green"],["zholt","жолт","yellow"],
+    ["bel","бел","white"],["crn","црн","black"],["golem","голем","big"],
+    ["mal","мал","small"],["nov","нов","new"],["star","стар","old"],["ubav","убав","beautiful"]
+  ], sentences:[
+    ["Kukjata e golema.","Куќата е голема.","The house is big."],
+    ["Imam crvena kola.","Имам црвена кола.","I have a red car."],
+    ["Ova e mnogu ubavo.","Ова е многу убаво.","This is very nice."],
+    ["Kucheto e malo i crno.","Кучето е мало и црно.","The dog is small and black."],
+    ["Knigata e stara.","Книгата е стара.","The book is old."],
+    ["Sakam zelen chaj.","Сакам зелен чај.","I like green tea."]
+  ]},
+  { id:"shop", name:"Shopping & money", words:[
+    ["pari","пари","money"],["prodavnica","продавница","shop"],["pazar","пазар","market"],
+    ["skapo","скапо","expensive"],["evtino","евтино","cheap"],["denar","денар","denar"],
+    ["kesa","кеса","bag"],["smetka","сметка","bill"]
+  ], sentences:[
+    ["Kolku chini ova?","Колку чини ова?","How much does this cost?"],
+    ["Toa e premnogu skapo.","Тоа е премногу скапо.","That's too expensive."],
+    ["Mozhe li da platam so kartichka?","Може ли да платам со картичка?","Can I pay by card?"],
+    ["Smetkata, te molam.","Сметката, те молам.","The bill, please."],
+    ["Sakam ova.","Сакам ова.","I want this one."],
+    ["Kade e pazarot?","Каде е пазарот?","Where is the market?"]
+  ]},
+  { id:"num2", name:"Numbers 11–1000", words:[
+    ["edinaeset","единаесет","eleven"],["dvanaeset","дванаесет","twelve"],["petnaeset","петнаесет","fifteen"],
+    ["dvaeset","дваесет","twenty"],["trieset","триесет","thirty"],["pedeset","педесет","fifty"],
+    ["sto","сто","one hundred"],["iljada","илјада","one thousand"]
+  ], sentences:[
+    ["Kolku godini imash?","Колку години имаш?","How old are you?"],
+    ["Imam dvaeset godini.","Имам дваесет години.","I'm twenty years old."],
+    ["Toa chini sto denari.","Тоа чини сто денари.","That costs a hundred denars."],
+    ["Avtobusot doagja vo dvanaeset.","Автобусот доаѓа во дванаесет.","The bus comes at twelve."],
+    ["Sobata e broj dvaeset.","Собата е број дваесет.","The room is number twenty."]
+  ]},
+  { id:"travel", name:"Work & travel", words:[
+    ["rabota","работа","work"],["kancelarija","канцеларија","office"],["sostanok","состанок","meeting"],
+    ["patuvanje","патување","trip"],["avion","авион","plane"],["hotel","хотел","hotel"],
+    ["aerodrom","аеродром","airport"],["bilet","билет","ticket"],["pasosh","пасош","passport"]
+  ], sentences:[
+    ["Imam sostanok utre.","Имам состанок утре.","I have a meeting tomorrow."],
+    ["Kade e aerodromot?","Каде е аеродромот?","Where is the airport?"],
+    ["Patuvam za rabota.","Патувам за работа.","I travel for work."],
+    ["Edna soba, te molam.","Една соба, те молам.","One room, please."],
+    ["Mojot let e vo osum.","Мојот лет е во осум.","My flight is at eight."],
+    ["Kolku chini biletot?","Колку чини билетот?","How much is the ticket?"]
+  ]},
+  { id:"weather", name:"Weather & seasons", words:[
+    ["vreme","време","weather"],["sonce","сонце","sun"],["dozhd","дожд","rain"],
+    ["sneg","снег","snow"],["studeno","студено","cold"],["toplo","топло","warm"],
+    ["leto","лето","summer"],["zima","зима","winter"],["veter","ветер","wind"]
+  ], sentences:[
+    ["Kakvo e vremeto?","Какво е времето?","What's the weather like?"],
+    ["Denes e studeno.","Денес е студено.","It's cold today."],
+    ["Vrne dozhd.","Врне дожд.","It's raining."],
+    ["Vrne sneg.","Врне снег.","It's snowing."],
+    ["Sakam leto.","Сакам лето.","I love summer."],
+    ["Utre kje bide toplo.","Утре ќе биде топло.","It will be warm tomorrow."]
+  ]},
+  { id:"feel", name:"Feelings & opinions", words:[
+    ["srekjen","среќен","happy"],["tazhen","тажен","sad"],["gladen","гладен","hungry"],
+    ["zheden","жеден","thirsty"],["dobro","добро","good"],["losho","лошо","bad"],
+    ["mislam","мислам","I think"],["zaedno","заедно","together"]
+  ], sentences:[
+    ["Gladen sum.","Гладен сум.","I'm hungry."],
+    ["Zheden sum.","Жеден сум.","I'm thirsty."],
+    ["Mnogu sum srekjen.","Многу сум среќен.","I'm very happy."],
+    ["Mislam deka e dobro.","Мислам дека е добро.","I think it's good."],
+    ["Ne mi se dopagja.","Не ми се допаѓа.","I don't like it."],
+    ["Mi se dopagja Makedonija.","Ми се допаѓа Македонија.","I like Macedonia."]
+  ]},
+  { id:"body", name:"Body & health", words:[
+    ["glava","глава","head"],["raka","рака","hand / arm"],["noga","нога","leg / foot"],
+    ["oko","око","eye"],["zab","заб","tooth"],["stomak","стомак","stomach"],
+    ["lekar","лекар","doctor"],["apteka","аптека","pharmacy"]
+  ], sentences:[
+    ["Me boli glava.","Ме боли глава.","I have a headache."],
+    ["Me boli stomakot.","Ме боли стомакот.","My stomach hurts."],
+    ["Mi treba lekar.","Ми треба лекар.","I need a doctor."],
+    ["Kade ima apteka?","Каде има аптека?","Where is there a pharmacy?"],
+    ["Umoren sum.","Уморен сум.","I'm tired."],
+    ["Se chuvstvuvam podobro.","Се чувствувам подобро.","I feel better."]
+  ]},
+  { id:"out", name:"Friends & going out", words:[
+    ["prijatel","пријател","friend"],["kafana","кафана","tavern"],["muzika","музика","music"],
+    ["pesna","песна","song"],["film","филм","film"],["veselba","веселба","party"],
+    ["pivo","пиво","beer"],["rakija","ракија","rakija"]
+  ], sentences:[
+    ["Ajde na kafe!","Ајде на кафе!","Let's go for coffee!"],
+    ["Sakash li pivo?","Сакаш ли пиво?","Do you want a beer?"],
+    ["Ova e moj prijatel.","Ова е мој пријател.","This is my friend."],
+    ["Odime vo kafana.","Одиме во кафана.","We're going to a tavern."],
+    ["Ja sakam ovaa pesna.","Ја сакам оваа песна.","I love this song."],
+    ["Vecherva ima veselba.","Вечерва има веселба.","There's a party tonight."]
+  ]}
+
+];
+
+/* ================= Course items ================= */
+const ITEMS = [];
+UNITS.forEach((u,ui)=>{
+  u.items = [];
+  [["w",u.words],["s",u.sentences]].forEach(([kind,list])=>list.forEach((r,i)=>{
+    const it = {key:`${u.id}.${kind}${i}`, lat:r[0], cyr:r[1], en:r[2], kind, unit:ui};
+    ITEMS.push(it); u.items.push(it);
+  }));
+});
+const ITEM = Object.fromEntries(ITEMS.map(it=>[it.key,it]));
+
+/* ================= Helpers ================= */
+const app = document.getElementById("app");
+const DAY = 864e5;
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mk = it => `<span class="mk">${esc(it.lat)}</span><span class="cy">${esc(it.cyr)}</span>`;
+const fmt = n => Math.round(n).toLocaleString("en-CA");
+const dayKey = (t=Date.now()) => { const d=new Date(t); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const toks = s => s.replace(/[.,!?]/g,"").split(/\s+/).filter(Boolean);
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v); }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ================= Icons ================= */
+const I = {
+  star:(on=true)=>`<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.2l-5.8 3.2 1.2-6.5L2.6 9.4l6.5-.8z" fill="${on?"#ffc929":"rgba(255,255,255,.22)"}" stroke="${on?"#c98b00":"none"}" stroke-width="1.2" stroke-linejoin="round"/></svg>`,
+  starInk:`<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.2l-5.8 3.2 1.2-6.5L2.6 9.4l6.5-.8z" fill="#ffc929" stroke="#c98b00" stroke-width="1.2" stroke-linejoin="round"/></svg>`,
+  heart:(on=true)=>`<svg viewBox="0 0 24 24"><path d="M12 20.5s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.3 4.6 4.6 0 0 1 20 9.5c0 6.1-8 11-8 11z" fill="${on?"#ff5a4f":"rgba(255,255,255,.3)"}" stroke="${on?"#fff3d6":"none"}" stroke-width="1.6"/></svg>`,
+  bolt:`<svg viewBox="0 0 24 24"><path d="M13.5 2L4 13.5h6.5L9.5 22 20 9.5h-6.5z" fill="currentColor"/></svg>`,
+  sun:`<svg viewBox="0 0 40 40"><g stroke="#ffc929" stroke-width="3" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>`<line x1="20" y1="3" x2="20" y2="9" transform="rotate(${a} 20 20)"/>`).join("")}</g><circle cx="20" cy="20" r="8.5" fill="#ffc929"/></svg>`,
+  sunInk:`<svg viewBox="0 0 40 40"><g stroke="#e0461f" stroke-width="3.4" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>`<line x1="20" y1="3" x2="20" y2="9" transform="rotate(${a} 20 20)"/>`).join("")}</g><circle cx="20" cy="20" r="8.5" fill="#e0461f"/></svg>`,
+  lock:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>`,
+  x:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+  gear:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M2.5 12h3M18.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>`,
+  trophy:`<svg viewBox="0 0 24 24"><path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="#2b1608"/><path d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10" fill="none" stroke="#2b1608" stroke-width="2"/><path d="M10.5 13h3v4h-3z" fill="#2b1608"/><rect x="7.5" y="17" width="9" height="3.5" rx="1" fill="#2b1608"/></svg>`,
+  clock:`<svg viewBox="0 0 24 24" fill="none" stroke="#2b1608" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9.5 2.5h5"/></svg>`,
+  flag:`<svg viewBox="0 0 24 24" fill="none" stroke="#2b1608" stroke-width="2.6" stroke-linecap="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5" fill="#2b1608"/></svg>`,
+  boltInk:`<svg viewBox="0 0 24 24"><path d="M13.5 2L4 13.5h6.5L9.5 22 20 9.5h-6.5z" fill="#2b1608"/></svg>`,
+  heartInk:`<svg viewBox="0 0 24 24"><path d="M12 20.5s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.3 4.6 4.6 0 0 1 20 9.5c0 6.1-8 11-8 11z" fill="#2b1608"/></svg>`,
+  starDark:`<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.2l-5.8 3.2 1.2-6.5L2.6 9.4l6.5-.8z" fill="#2b1608"/></svg>`,
+  medal:`<svg viewBox="0 0 24 24"><path d="M7 2h4l1 5-3 1zM17 2h-4l-1 5 3 1z" fill="#2b1608"/><circle cx="12" cy="15" r="6.5" fill="#2b1608"/><path d="M12 11.5l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#ffc929"/></svg>`
+};
+
+/* ================= Saved progress (this device) ================= */
+const KEY = "zbor-igra-v1";
+function fresh(){ return {v:1, xp:0, units:{}, badges:{}, days:{}, blitzBest:0, rounds:0, perfect:0, bestCombo:0, fastestMatch:0, miss:{}, cyr:true, openAll:false}; }
+let G = Object.assign(fresh(), store.get(KEY, {}));
+const save = () => store.set(KEY, G);
+const U = id => G.units[id] || (G.units[id] = {stars:0, best:0, plays:0});
+const unlocked = i => G.openAll || i===0 || (G.units[UNITS[i-1].id]||{}).stars>0;
+const totalStars = () => UNITS.reduce((n,u)=>n+((G.units[u.id]||{}).stars||0),0);
+const clearedUnits = () => UNITS.filter(u=>((G.units[u.id]||{}).stars||0)>0).length;
+function streakDays(){
+  let n=0, t=Date.now();
+  if(!G.days[dayKey(t)]) t-=DAY;
+  while(G.days[dayKey(t)]){ n++; t-=DAY; }
+  return n;
+}
+function nextUnit(){
+  for(let i=0;i<UNITS.length;i++) if(unlocked(i) && !((G.units[UNITS[i].id]||{}).stars>0)) return i;
+  for(let i=0;i<UNITS.length;i++) if(unlocked(i) && (G.units[UNITS[i].id]||{}).stars<3) return i;
+  return 0;
+}
+
+/* ================= Levels ================= */
+const xpFor = L => 500*(L-1)*L;               // total XP needed to reach level L
+const levelOf = xp => { let L=1; while(xp >= xpFor(L+1)) L++; return L; };
+const TITLES = [[20,"Legenda","Legend"],[15,"Majstor","Master"],[10,"Poznavach","Expert"],[5,"Uchenik","Student"],[1,"Pochetnik","Beginner"]];
+const titleOf = L => TITLES.find(t=>L>=t[0]);
+
+/* ================= Badges ================= */
+const BADGES = [
+  {id:"first",   ic:"flag",    name:"First step",     how:"Finish your first round"},
+  {id:"perfect", ic:"heartInk",name:"Flawless",       how:"Finish a round with all 3 hearts"},
+  {id:"combo10", ic:"boltInk", name:"On fire",        how:"Reach a 10-answer combo"},
+  {id:"fast",    ic:"clock",   name:"Lightning",      how:"Clear a match board in under 15 seconds"},
+  {id:"units5",  ic:"flag",    name:"Explorer",       how:"Clear 5 units"},
+  {id:"units17", ic:"trophy",  name:"Grand tour",     how:"Clear all 17 units"},
+  {id:"stars25", ic:"starDark",name:"Star collector", how:"Earn 25 stars"},
+  {id:"stars51", ic:"starDark",name:"Every star",     how:"Earn all 51 stars"},
+  {id:"blitz2k", ic:"boltInk", name:"Quick thinker",  how:"Score 2,000 in Blitz"},
+  {id:"blitz5k", ic:"boltInk", name:"Blitz champion", how:"Score 5,000 in Blitz"},
+  {id:"days3",   ic:"clock",   name:"Three in a row", how:"Play 3 days in a row"},
+  {id:"days7",   ic:"clock",   name:"Full week",      how:"Play 7 days in a row"},
+  {id:"xp10k",   ic:"medal",   name:"10,000 club",    how:"Earn 10,000 points in total"},
+  {id:"lvl10",   ic:"medal",   name:"Poznavach",      how:"Reach level 10"}
+];
+function checkBadges(ctx={}){
+  const L = levelOf(G.xp), st = totalStars(), cu = clearedUnits(), sd = streakDays();
+  const tests = {
+    first: G.rounds>=1, perfect: G.perfect>=1, combo10: G.bestCombo>=10,
+    fast: G.fastestMatch>0 && G.fastestMatch<15, units5: cu>=5, units17: cu>=17,
+    stars25: st>=25, stars51: st>=51, blitz2k: G.blitzBest>=2000, blitz5k: G.blitzBest>=5000,
+    days3: sd>=3, days7: sd>=7, xp10k: G.xp>=10000, lvl10: L>=10
+  };
+  const got = [];
+  BADGES.forEach(b=>{ if(tests[b.id] && !G.badges[b.id]){ G.badges[b.id]=Date.now(); got.push(b); } });
+  return got;
+}
+function toast(b){
+  const t=document.createElement("div"); t.className="toast";
+  t.innerHTML=`<div class="badge" style="padding:0;box-shadow:none;background:none"><div class="ic" style="width:40px;height:40px">${I[b.ic]}</div></div><div>${esc(b.name)}<span>Badge unlocked</span></div>`;
+  document.body.appendChild(t); setTimeout(()=>t.remove(), 3000);
+}
+
+/* ================= Shell ================= */
+let view = "home";
+function applyCyr(){ document.body.classList.toggle("hide-cyr", !G.cyr); }
+function topbar(){
+  return `<div class="topbar">
+    <div class="brand">${I.sun.replace("<svg","<svg width=\"34\" height=\"34\"")}<div>Zbor Igra<small>ЗБОР ИГРА · WORD GAME</small></div></div>
+    <div style="display:flex;gap:8px">
+      <button class="iconbtn" id="goBadges" aria-label="Badges">${I.star(true)}</button>
+      <button class="iconbtn" id="goSet" aria-label="Settings">${I.gear}</button>
+    </div></div>`;
+}
+function bindTop(){
+  document.getElementById("goBadges").onclick = badgesView;
+  document.getElementById("goSet").onclick = settingsView;
+}
+
+/* ================= Home ================= */
+function home(){
+  view="home"; stopTimers();
+  const L = levelOf(G.xp), t = titleOf(L), lo = xpFor(L), hi = xpFor(L+1);
+  const pct = Math.min(100, (G.xp-lo)/(hi-lo)*100);
+  const ni = nextUnit(), nu = UNITS[ni], nuStars = (G.units[nu.id]||{}).stars||0;
+  const pos = ["c","r","c","l"];
+  app.innerHTML = topbar() + `
+    <div class="player">
+      <div class="prow">
+        <div class="medal num">${L}</div>
+        <div class="ptitle"><b>Level ${L} · ${t[1]}</b><span>${t[2]} · <span class="num">${fmt(G.xp-lo)} / ${fmt(hi-lo)}</span> XP to level ${L+1}</span>
+          <div class="xpbar"><i style="width:${pct}%"></i></div></div>
+      </div>
+      <div class="chips">
+        <div class="chip">${I.starInk}<div class="num">${totalStars()}<span>of 51 stars</span></div></div>
+        <div class="chip">${I.sunInk}<div class="num">${streakDays()}<span>day streak</span></div></div>
+        <div class="chip">${I.trophy.replace(/#2b1608/g,"#c98b00")}<div class="num">${Object.keys(G.badges).length}<span>of ${BADGES.length} badges</span></div></div>
+      </div>
+    </div>
+    <div class="playrow">
+      <button class="btn" id="playNext">Play ${esc(nu.name)}<small>${nuStars?`${nuStars}/3 stars`:"New"}</small></button>
+      <div class="blitz"><div><b>Blitz · 60 seconds</b><span>Best <span class="num">${fmt(G.blitzBest)}</span> · every word you've unlocked</span></div><button class="btn cream" id="playBlitz">Go</button></div>
+    </div>
+    <div class="maph"><span>Map</span><span class="num">${clearedUnits()} of ${UNITS.length} cleared</span></div>
+    <div class="map" id="map">
+      <svg class="trail" id="trail" aria-hidden="true"></svg>
+      ${UNITS.map((u,i)=>{
+        const s=(G.units[u.id]||{}).stars||0, lock=!unlocked(i), cur=i===ni;
+        const cls = lock?"locked":cur?"cur":s===3?"done3":"";
+        return `<div class="stop ${pos[i%4]} ${lock?"lockd":""}">
+          ${cur?`<div class="tag-cur">${s?"Next":"Start"}</div>`:""}
+          <button class="node ${cls}" data-u="${i}" aria-label="${esc(u.name)}${lock?", locked":`, ${s} stars`}">${lock?I.lock:s===3?I.star(true).replace('fill="#ffc929"','fill="#fff"').replace('stroke="#c98b00"','stroke="#fff"'):i+1}</button>
+          <div class="stars">${[1,2,3].map(n=>I.star(s>=n)).join("")}</div>
+          <div class="sname">${esc(u.name)}</div>
+        </div>`;}).join("")}
+    </div>`;
+  bindTop(); applyCyr();
+  document.getElementById("playNext").onclick = ()=>startRound(ni);
+  document.getElementById("playBlitz").onclick = startBlitz;
+  app.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>unitSheet(+b.dataset.u));
+  requestAnimationFrame(drawTrail);
+}
+function drawTrail(){
+  const map=document.getElementById("map"), svg=document.getElementById("trail"); if(!map||!svg) return;
+  const r=map.getBoundingClientRect();
+  const pts=[...map.querySelectorAll(".node")].map(n=>{const b=n.getBoundingClientRect(); return {x:b.left-r.left+b.width/2, y:b.top-r.top+b.height/2, rad:b.width/2};});
+  svg.setAttribute("viewBox",`0 0 ${r.width} ${r.height}`);
+  // leave each node from the side facing the next one and arrive at the top of the next, so the trail stays clear of the names
+  let d=""; pts.slice(1).forEach((p,i)=>{ const q=pts[i], dir=p.x>=q.x?1:-1, sx=q.x+dir*(q.rad+6), ey=p.y-p.rad-8;
+    d+=`M${sx},${q.y} Q${p.x},${q.y} ${p.x},${ey} `; });
+  svg.innerHTML=`<path d="${d}" fill="none" stroke="rgba(255,243,214,.28)" stroke-width="6" stroke-dasharray="2 14" stroke-linecap="round"/>`;
+}
+window.addEventListener("resize", ()=>{ if(view==="home") drawTrail(); });
+
+function unitSheet(i){
+  const u=UNITS[i], lock=!unlocked(i), rec=G.units[u.id]||{stars:0,best:0,plays:0};
+  const sc=document.createElement("div"); sc.className="scrim";
+  sc.innerHTML=`<div class="sheet" role="dialog" aria-label="${esc(u.name)}"><div class="grab"></div>
+    <h2>${esc(u.name)}</h2>
+    <p class="sub">Unit ${i+1} · ${u.words.length} words${u.sentences.length?` · ${u.sentences.length} sentences`:""}</p>
+    <div class="row"><div class="num">${rec.stars}/3<span>Stars</span></div><div class="num">${fmt(rec.best)}<span>Best score</span></div><div class="num">${rec.plays}<span>Plays</span></div></div>
+    ${lock?`<button class="btn cream" disabled>Locked: earn a star in ${esc(UNITS[i-1].name)}</button>`:`<button class="btn" id="sheetPlay">${rec.plays?"Play again":"Play"}</button>`}
+    <ul class="wl">${u.items.map(it=>`<li><div>${mk(it)}</div><div class="en">${esc(it.en)}</div></li>`).join("")}</ul>
+  </div>`;
+  document.body.appendChild(sc); applyCyr();
+  sc.onclick=e=>{ if(e.target===sc) sc.remove(); };
+  const p=sc.querySelector("#sheetPlay"); if(p) p.onclick=()=>{ sc.remove(); startRound(i); };
+}
+
+/* ================= Challenge building ================= */
+function pool(it){
+  const same = UNITS[it.unit].items.filter(x=>x.kind===it.kind);
+  const more = ITEMS.filter(x=>x.kind===it.kind && x.unit!==it.unit && unlocked(x.unit));
+  const rest = ITEMS.filter(x=>x.kind===it.kind && x.unit!==it.unit && !unlocked(x.unit));
+  return [...shuffle(same), ...shuffle(more), ...shuffle(rest)];
+}
+function options(it, n, field){
+  const out=[it], used=new Set([it[field].toLowerCase()]);
+  for(const x of pool(it)){ if(out.length>=n) break; const v=x[field].toLowerCase(); if(!used.has(v)){ used.add(v); out.push(x); } }
+  return shuffle(out);
+}
+const STOP = new Set(["e","i","da","li","na","vo","so","se","mi","me","ja","ti","za","od","sum"]);
+function makeCloze(it){
+  const L=toks(it.lat), C=toks(it.cyr);
+  const proper = i => i>0 && L[i][0]!==L[i][0].toLowerCase();
+  let cand=L.map((t,i)=>i).filter(i=>L[i].length>=3 && !STOP.has(L[i].toLowerCase()) && !proper(i));
+  if(!cand.length) cand=L.map((t,i)=>i);
+  const gap=pick(cand), ans={lat:L[gap].toLowerCase(), cyr:(C[gap]||"").toLowerCase()};
+  const inSent=new Set(L.map(t=>t.toLowerCase())), unitT=new Set(UNITS[it.unit].items.flatMap(x=>toks(x.lat).map(t=>t.toLowerCase())));
+  const all=[], seen=new Set();
+  ITEMS.filter(x=>unlocked(x.unit)||x.unit===it.unit).forEach(x=>{ const xl=toks(x.lat), xc=toks(x.cyr); xl.forEach((t,i)=>{ const k=t.toLowerCase(); if(i>0&&t[0]!==k[0]) return; if(!seen.has(k)&&!STOP.has(k)&&!inSent.has(k)){ seen.add(k); all.push({lat:k,cyr:(xc[i]||"").toLowerCase()}); } }); });
+  const ranked=shuffle(all).sort((a,b)=>(unitT.has(b.lat)-unitT.has(a.lat))||(Math.abs(a.lat.length-ans.lat.length)-Math.abs(b.lat.length-ans.lat.length)));
+  return {L, C, gap, ans, opts:shuffle([ans, ...ranked.slice(0,3)]), end:(it.lat.match(/[.?!]$/)||[""])[0], endC:(it.cyr.match(/[.?!]$/)||[""])[0]};
+}
+function buildTiles(it){
+  const L=toks(it.lat), C=toks(it.cyr), tiles=L.map((t,i)=>({lat:t,cyr:C[i]||""}));
+  const have=new Set(L.map(t=>t.toLowerCase())), extra=[];
+  for(const x of shuffle(ITEMS.filter(x=>x.kind==="s"&&x!==it&&(x.unit===it.unit||unlocked(x.unit))))){
+    toks(x.lat).forEach((t,i)=>{ if(extra.length<2 && !have.has(t.toLowerCase())){ have.add(t.toLowerCase()); extra.push({lat:t,cyr:toks(x.cyr)[i]||""}); } });
+    if(extra.length>=2) break;
+  }
+  return shuffle([...tiles,...extra]).map((t,i)=>({...t,id:i}));
+}
+const LIMIT = {pickEn:10, pickMk:10, tf:6, cloze:15, build:25, match:45};
+function makeCh(type, it, extra={}){
+  const c={type, it, limit:LIMIT[type], ...extra};
+  if(type==="pickEn") c.opts=options(it, it.kind==="s"?3:4, "en");
+  if(type==="pickMk") c.opts=options(it, it.kind==="s"?3:4, "lat");
+  if(type==="tf"){ c.truth=Math.random()<.5; c.shown = c.truth ? it : options(it,4,"en").find(x=>x!==it) || it; if(c.shown===it) c.truth=true; }
+  if(type==="cloze") c.cloze=makeCloze(it);
+  if(type==="build") c.tiles=buildTiles(it);
+  return c;
+}
+const weakFirst = arr => [...arr].sort((a,b)=>((G.miss[b.key]||0)+Math.random()*1.5)-((G.miss[a.key]||0)+Math.random()*1.5));
+function buildRound(ui){
+  const u=UNITS[ui];
+  const W=shuffle(u.items.filter(x=>x.kind==="w")), S=shuffle(u.items.filter(x=>x.kind==="s"));
+  const review=weakFirst(ITEMS.filter(x=>x.unit<ui && unlocked(x.unit) && x.kind==="w")).slice(0, ui>0?2:0);
+  const out=[];
+  const matchSet=W.slice(0,5);
+  const singles=[...W.slice(5), ...W.slice(0,5)];
+  // warm-up: quick true/false, then picks
+  out.push(makeCh("tf", singles[0]));
+  out.push(makeCh("pickEn", singles[1]));
+  out.push(makeCh("pickMk", singles[2]));
+  out.push({type:"match", group:matchSet, limit:LIMIT.match});
+  out.push(makeCh("tf", singles[3%singles.length]));
+  review.forEach(it=>out.push(makeCh(pick(["pickEn","pickMk"]), it)));
+  if(S.length){
+    out.push(makeCh("pickEn", S[0]));
+    out.push(makeCh("cloze", S[1%S.length]));
+    out.push(makeCh("cloze", S[2%S.length]));
+    out.push(makeCh("build", S[3%S.length]));
+    out.push(makeCh("pickMk", S[4%S.length]));
+  } else {
+    [4,5,6,7,8].forEach((k,j)=>out.push(makeCh(["pickEn","pickMk","tf","pickEn","pickMk"][j], singles[k%singles.length])));
+  }
+  return out;
+}
+
+/* ================= Round engine ================= */
+let R=null, tmr=null;
+function stopTimers(){ if(tmr){ clearTimeout(tmr); tmr=null; } if(R&&R.blitzTick){ clearInterval(R.blitzTick); } document.querySelectorAll(".fb,.scrim").forEach(e=>e.remove()); }
+const mult = c => c>=10?4:c>=6?3:c>=3?2:1;
+function startRound(ui){
+  stopTimers();
+  R={mode:"unit", ui, ch:buildRound(ui), i:0, hearts:3, score:0, combo:0, best:0, correct:0, answered:0, missed:[], t0:Date.now()};
+  view="round"; renderCh();
+}
+function hud(){
+  const blitz=R.mode==="blitz";
+  return `<div class="hud">
+    <button class="quit" id="quit" aria-label="Quit">${I.x}</button>
+    ${blitz?`<div class="rprog"><i id="btime" style="width:100%"></i></div>`:`<div class="rprog"><i style="width:${R.i/R.ch.length*100}%"></i></div>
+    <div class="hearts" id="hearts">${[0,1,2].map(n=>`<span class="${n<R.hearts?"":"lost"}">${I.heart(n<R.hearts)}</span>`).join("")}</div>`}
+  </div>
+  <div class="scorebox"><div class="score num" id="score">${fmt(R.score)}<small>pts</small></div>
+    <div class="combo ${R.combo>=3?"on":""}" id="combo">${I.bolt}<span id="comboTxt">x${mult(R.combo)}</span></div></div>
+  ${blitz?"":`<div class="timer"><i id="tbar"></i></div>`}`;
+}
+function startTimer(sec, onOut){
+  const bar=document.getElementById("tbar"); R.qStart=Date.now(); R.qLimit=sec*1000;
+  if(bar){ bar.style.transition="none"; bar.style.width="100%"; bar.offsetWidth; bar.style.transition=`width ${sec}s linear`; bar.style.width="0%";
+    setTimeout(()=>bar&&bar.classList.add("low"), sec*700); }
+  if(tmr) clearTimeout(tmr);
+  tmr=setTimeout(()=>{ tmr=null; onOut(); }, sec*1000);
+}
+function freezeTimer(){ if(tmr){ clearTimeout(tmr); tmr=null; } const bar=document.getElementById("tbar"); if(bar){ const w=getComputedStyle(bar).width; bar.style.transition="none"; bar.style.width=w; } }
+const speedFrac = () => R.qLimit ? Math.max(0, 1-(Date.now()-R.qStart)/R.qLimit) : 0;
+function setScore(){ const s=document.getElementById("score"); if(s) s.innerHTML=`${fmt(R.score)}<small>pts</small>`;
+  const c=document.getElementById("combo"); if(c){ c.classList.toggle("on", R.combo>=3); document.getElementById("comboTxt").textContent="x"+mult(R.combo); c.classList.remove("pulse"); void c.offsetWidth; if(R.combo>=3) c.classList.add("pulse"); } }
+function floater(txt){ const f=document.createElement("div"); f.className="floater num"; f.textContent=txt; document.body.appendChild(f); setTimeout(()=>f.remove(),900); }
+function gain(base){
+  R.combo++; R.best=Math.max(R.best,R.combo); R.correct++; R.answered++;
+  const pts=Math.round(base*mult(R.combo)); R.score+=pts; floater("+"+pts); setScore();
+  return pts;
+}
+function loseHeart(it){
+  R.combo=0; R.answered++;
+  if(it && !R.missed.includes(it)) R.missed.push(it);
+  if(it) G.miss[it.key]=(G.miss[it.key]||0)+1;
+  if(R.mode==="blitz"){ R.endAt-=5000; floater("−5 s"); setScore(); return; }
+  R.hearts--; setScore();
+  const h=document.getElementById("hearts"); if(h){ const sp=h.children[R.hearts]; if(sp){ sp.classList.add("lost","hit"); sp.innerHTML=I.heart(false); } }
+}
+function credit(it){ if(it && G.miss[it.key]) G.miss[it.key]=Math.max(0,G.miss[it.key]-1); }
+function next(){
+  document.querySelectorAll(".fb").forEach(e=>e.remove());
+  if(R.mode==="blitz"){ renderCh(); return; }
+  if(R.hearts<=0) return endRound(false);
+  R.i++; R.i<R.ch.length ? renderCh() : endRound(true);
+}
+function showWrong(ansHTML, msg="Not quite"){
+  const fb=document.createElement("div"); fb.className="fb no";
+  fb.innerHTML=`<div class="in"><h3>${esc(msg)}</h3><p class="ans">${ansHTML}</p><button class="btn danger" id="cont">${R.hearts<=0?"See results":"Continue"}</button></div>`;
+  document.body.appendChild(fb); applyCyr();
+  const b=fb.querySelector("#cont"); b.focus(); b.onclick=next;
+}
+const answerLine = it => `${mk(it)} <span style="font-weight:700;color:var(--muted)">= ${esc(it.en)}</span>`;
+
+function renderCh(){
+  if(R.mode==="blitz"){ R.cur = blitzCh(); }
+  const c = R.mode==="blitz" ? R.cur : R.ch[R.i];
+  const R_={pickEn:rPick, pickMk:rPick, tf:rTF, cloze:rCloze, build:rBuild, match:rMatch}[c.type];
+  app.innerHTML = hud() + `<div id="stage"></div>`;
+  document.getElementById("quit").onclick = ()=>{ if(R.answered) endRound(false, true); else home(); };
+  R_(c, document.getElementById("stage"));
+  applyCyr();
+}
+
+/* pick the meaning / pick the Macedonian */
+function rPick(c, st){
+  const it=c.it, toEn=c.type==="pickEn", sent=it.kind==="s";
+  st.innerHTML=`<p class="qlabel">${toEn?"What does this mean?":"Pick the Macedonian"}</p>
+    <div class="qcard">${toEn?`<div class="big ${sent?"s":""}">${mk(it)}</div>`:`<div class="big ${sent?"s":""}">${esc(it.en)}</div>`}</div>
+    <div class="opts ${sent?"one":""}">${c.opts.map((o,k)=>`<button class="opt" data-k="${k}">${toEn?esc(o.en):mk(o)}</button>`).join("")}</div>`;
+  const btns=[...st.querySelectorAll(".opt")];
+  const done=(k)=>{
+    freezeTimer(); btns.forEach(b=>b.disabled=true);
+    const right=c.opts.indexOf(it), ok=k===right;
+    btns[right].classList.add("right"); btns.forEach((b,i)=>{ if(i!==right&&i!==k) b.classList.add("dim"); });
+    if(ok){ gain(100+50*speedFrac()); credit(it); setTimeout(next, R.mode==="blitz"?350:650); }
+    else { if(k>=0) btns[k].classList.add("wrong"); loseHeart(it); if(R.mode==="blitz") setTimeout(next, 900); else showWrong(answerLine(it), k<0?"Time's up":"Not quite"); }
+  };
+  btns.forEach((b,k)=>b.onclick=()=>done(k));
+  if(R.mode!=="blitz") startTimer(c.limit, ()=>done(-1));
+}
+/* true or false */
+function rTF(c, st){
+  const it=c.it, s=c.shown;
+  st.innerHTML=`<p class="qlabel">True or false?</p>
+    <div class="qcard"><div class="big">${mk(it)}</div><div class="eq">means</div><div class="big s" style="color:var(--muted)">${esc(s.en)}</div></div>
+    <div class="tf"><button class="opt" data-v="1">True</button><button class="opt" data-v="0">False</button></div>`;
+  const btns=[...st.querySelectorAll(".opt")];
+  const done=v=>{
+    freezeTimer(); btns.forEach(b=>b.disabled=true);
+    const ok = v===null ? false : (v===c.truth);
+    const rightBtn = btns[c.truth?0:1]; rightBtn.classList.add("right");
+    if(ok){ gain(80+40*speedFrac()); credit(it); setTimeout(next, R.mode==="blitz"?350:600); }
+    else { if(v!==null) btns[v?0:1].classList.add("wrong"); loseHeart(it); if(R.mode==="blitz") setTimeout(next, 900); else showWrong(answerLine(it), v===null?"Time's up":"Not quite"); }
+  };
+  btns.forEach(b=>b.onclick=()=>done(b.dataset.v==="1"));
+  if(R.mode!=="blitz") startTimer(c.limit, ()=>done(null));
+}
+/* finish the sentence */
+function rCloze(c, st){
+  const it=c.it, z=c.cloze;
+  const line=(T,end,fill)=>T.map((t,i)=>i===z.gap?`<span class="gap ${fill?"ok":""}">${fill?esc(fill):"&nbsp;"}</span>`:esc(t)).join(" ")+esc(end);
+  st.innerHTML=`<p class="qlabel">Finish the sentence</p>
+    <div class="qcard"><div class="big s"><span class="mk" id="zl">${line(z.L,z.end)}</span><span class="cy">${line(z.C,z.endC)}</span></div><div class="en">${esc(it.en)}</div></div>
+    <div class="opts">${z.opts.map((o,k)=>`<button class="opt" data-k="${k}"><span class="mk">${esc(o.lat)}</span><span class="cy">${esc(o.cyr)}</span></button>`).join("")}</div>`;
+  const btns=[...st.querySelectorAll(".opt")];
+  const done=k=>{
+    freezeTimer(); btns.forEach(b=>b.disabled=true);
+    const right=z.opts.indexOf(z.ans), ok=k===right;
+    btns[right].classList.add("right"); document.getElementById("zl").innerHTML=line(z.L,z.end,z.L[z.gap]);
+    if(ok){ gain(120+60*speedFrac()); credit(it); setTimeout(next, 900); }
+    else { if(k>=0) btns[k].classList.add("wrong"); loseHeart(it); showWrong(answerLine(it), k<0?"Time's up":"Not quite"); }
+  };
+  btns.forEach((b,k)=>b.onclick=()=>done(k));
+  startTimer(c.limit, ()=>done(-1));
+}
+/* build the sentence */
+function rBuild(c, st){
+  const it=c.it, chosen=[];
+  st.innerHTML=`<p class="qlabel">Build it in Macedonian</p>
+    <div class="qcard"><div class="big s">${esc(it.en)}</div></div>
+    <div class="line" id="line"></div>
+    <div class="bank" id="bank">${c.tiles.map(t=>`<button class="wt" data-id="${t.id}"><span class="mk">${esc(t.lat)}</span><span class="cy">${esc(t.cyr)}</span></button>`).join("")}</div>
+    <button class="btn" id="check" disabled>Check</button>`;
+  const line=st.querySelector("#line"), check=st.querySelector("#check");
+  const draw=()=>{ line.innerHTML=chosen.map(id=>{const t=c.tiles[id]; return `<button class="wt" data-back="${id}"><span class="mk">${esc(t.lat)}</span><span class="cy">${esc(t.cyr)}</span></button>`;}).join(""); applyCyr();
+    line.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{ const id=+b.dataset.back; chosen.splice(chosen.indexOf(id),1); st.querySelector(`#bank [data-id="${id}"]`).classList.remove("used"); draw(); });
+    check.disabled=!chosen.length; };
+  st.querySelectorAll("#bank .wt").forEach(b=>b.onclick=()=>{ if(b.classList.contains("used")) return; chosen.push(+b.dataset.id); b.classList.add("used"); draw(); });
+  const done=timeout=>{
+    freezeTimer(); st.querySelectorAll(".wt").forEach(b=>b.disabled=true); check.disabled=true;
+    const ok=!timeout && chosen.map(id=>c.tiles[id].lat.toLowerCase()).join(" ")===toks(it.lat).map(t=>t.toLowerCase()).join(" ");
+    if(ok){ gain(150+75*speedFrac()); credit(it); line.querySelectorAll(".wt").forEach(w=>{w.style.background="var(--good)";w.style.color="#fff";}); setTimeout(next, 900); }
+    else { loseHeart(it); showWrong(answerLine(it), timeout?"Time's up":"Not quite"); }
+  };
+  check.onclick=()=>done(false);
+  startTimer(c.limit, ()=>done(true));
+}
+/* match pairs */
+function rMatch(c, st){
+  const g=c.group, s={sel:null, left:g.length, t0:Date.now(), over:false};
+  st.innerHTML=`<p class="qlabel">Match the pairs</p>
+    <div class="board"><div class="col">${shuffle(g).map(it=>`<button class="tile" data-side="L" data-key="${it.key}">${mk(it)}</button>`).join("")}</div>
+    <div class="col">${shuffle(g).map(it=>`<button class="tile" data-side="R" data-key="${it.key}">${esc(it.en)}</button>`).join("")}</div></div>`;
+  const finish=timeout=>{
+    if(s.over) return; s.over=true; freezeTimer();
+    const secs=(Date.now()-s.t0)/1000;
+    if(timeout){ loseHeart(null); showWrong(`${s.left} pair${s.left===1?"":"s"} left unmatched.`, "Time's up"); return; }
+    const bonus=Math.round(Math.max(0, c.limit-secs)*10);
+    if(bonus){ R.score+=bonus; setTimeout(()=>floater("Speed +"+bonus), 250); setScore(); }
+    if(!G.fastestMatch || secs<G.fastestMatch) G.fastestMatch=Math.round(secs*10)/10;
+    setTimeout(next, 900);
+  };
+  st.querySelectorAll(".tile").forEach(t=>t.onclick=()=>{
+    if(s.over || t.classList.contains("ok")) return;
+    if(!s.sel || s.sel.dataset.side===t.dataset.side){ if(s.sel) s.sel.classList.remove("sel"); s.sel = s.sel===t?null:t; if(s.sel) t.classList.add("sel"); return; }
+    const a=s.sel; s.sel=null; a.classList.remove("sel");
+    if(a.dataset.key===t.dataset.key){
+      [a,t].forEach(x=>x.classList.add("ok")); s.left--; gain(50); credit(ITEM[t.dataset.key]);
+      if(!s.left) finish(false);
+    } else {
+      [a,t].forEach(x=>{ x.classList.remove("bad"); void x.offsetWidth; x.classList.add("bad"); setTimeout(()=>x.classList.remove("bad"),400); });
+      const lk=(a.dataset.side==="L"?a:t).dataset.key; loseHeart(ITEM[lk]);
+      if(R.hearts<=0){ s.over=true; freezeTimer(); showWrong(answerLine(ITEM[lk]), "Out of hearts"); }
+    }
+  });
+  startTimer(c.limit, ()=>finish(true));
+}
+
+/* ================= Blitz ================= */
+function blitzCh(){
+  const pool=ITEMS.filter(x=>x.kind==="w" && (unlocked(x.unit)));
+  const it = Math.random()<.35 ? weakFirst(pool)[0] : pick(pool);
+  return makeCh(pick(["pickEn","pickEn","pickMk","tf"]), it);
+}
+function startBlitz(){
+  stopTimers();
+  R={mode:"blitz", hearts:3, score:0, combo:0, best:0, correct:0, answered:0, missed:[], endAt:Date.now()+60000, t0:Date.now()};
+  view="round"; renderCh();
+  R.blitzTick=setInterval(()=>{
+    const left=Math.max(0,R.endAt-Date.now()), b=document.getElementById("btime");
+    if(b){ b.style.width=(left/600)+"%"; b.style.background = left<10000?"#ff7a4d":"var(--card)"; }
+    if(left<=0){ clearInterval(R.blitzTick); endRound(true); }
+  }, 100);
+}
+
+/* ================= Results ================= */
+function endRound(success, quit=false){
+  stopTimers(); if(R.blitzTick) clearInterval(R.blitzTick);
+  view="result";
+  const Lb=levelOf(G.xp);
+  G.xp+=R.score; G.bestCombo=Math.max(G.bestCombo,R.best);
+  if(R.answered) G.days[dayKey()]=(G.days[dayKey()]||0)+1;
+  let stars=0, unlockedNew=null, newBest=false;
+  if(R.mode==="unit"){
+    const u=UNITS[R.ui], rec=U(u.id); rec.plays++;
+    if(success && !quit){
+      G.rounds++; stars=Math.max(1,R.hearts); if(R.hearts===3) G.perfect++;
+      const wasOpen = R.ui+1<UNITS.length ? unlocked(R.ui+1) : true;
+      rec.stars=Math.max(rec.stars, stars);
+      if(!wasOpen && unlocked(R.ui+1)) unlockedNew=UNITS[R.ui+1];
+    }
+    if(R.score>rec.best){ rec.best=R.score; newBest=rec.plays>1; }
+  } else {
+    if(R.score>G.blitzBest){ newBest=G.blitzBest>0; G.blitzBest=R.score; }
+  }
+  const La=levelOf(G.xp), got=checkBadges(); save();
+  const acc = R.answered ? Math.round(R.correct/R.answered*100) : 0;
+  const head = R.mode==="blitz" ? ["Vreme!","Time's up"] : quit ? ["Pauza","Round stopped"] : success ? (R.hearts===3?["Sovrsheno!","Perfect round"]:["Bravo!","Round cleared"]) : ["Ajde pak!","Out of hearts. Try again"];
+  const ni = R.mode==="unit" ? nextUnit() : null;
+  app.innerHTML=`<div class="res">
+    <div><h1>${head[0]}</h1><p class="sub">${head[1]}${R.mode==="unit"?` · ${esc(UNITS[R.ui].name)}`:" · Blitz"}</p></div>
+    ${R.mode==="unit"?`<div class="bigstars">${[1,2,3].map(n=>`<span class="s${n} ${stars>=n?"pop":""}" style="animation-delay:${n*0.18}s">${I.star(stars>=n)}</span>`).join("")}</div>`:""}
+    <div class="rcard">
+      <div style="text-align:center"><div class="score num" style="font-size:2.4rem;color:var(--ink)" id="countup">0</div>
+        <div style="font-weight:800;color:var(--muted)">${newBest?"New best score!":R.mode==="blitz"?`Best ${fmt(G.blitzBest)}`:"points"}</div></div>
+      <div class="rstats"><div class="num">${acc}%<span>Accuracy</span></div><div class="num">${R.best}<span>Best combo</span></div><div class="num">${La}<span>Level</span></div></div>
+      ${La>Lb?`<div class="lvup">Level up! You're now level ${La} · ${titleOf(La)[1]} (${titleOf(La)[2]})</div>`:""}
+      ${unlockedNew?`<div class="unlock">New unit unlocked: ${esc(unlockedNew.name)}</div>`:""}
+      ${got.length?`<div class="newb">${got.map(b=>`<div>${I[b.ic].replace(/#2b1608/g,"#c98b00")}${esc(b.name)}</div>`).join("")}</div>`:""}
+      ${R.missed.length?`<div class="miss"><h3>Words to remember</h3><ul>${R.missed.map(it=>`<li><div>${mk(it)}</div><div class="en">${esc(it.en)}</div></li>`).join("")}</ul></div>`:""}
+    </div>
+    <div class="acts">
+      ${R.mode==="blitz"?`<button class="btn" id="again">Play Blitz again</button>`
+        : success&&!quit ? (ni!==R.ui?`<button class="btn" id="nextU">Next: ${esc(UNITS[ni].name)}</button><button class="btn cream" id="again">Replay for ${stars<3?"3 stars":"a higher score"}</button>`:`<button class="btn" id="again">Play again${stars<3?" for 3 stars":""}</button>`)
+        : `<button class="btn" id="again">Try again</button>`}
+      <button class="btn cream" id="home">Map</button>
+    </div></div>`;
+  applyCyr();
+  const ui=R.ui, mode=R.mode;
+  document.getElementById("again").onclick=()=> mode==="blitz"?startBlitz():startRound(ui);
+  const nx=document.getElementById("nextU"); if(nx) nx.onclick=()=>startRound(ni);
+  document.getElementById("home").onclick=home;
+  // count the score up
+  const el=document.getElementById("countup"), target=R.score, t0=performance.now();
+  const step=t=>{ const p=Math.min(1,(t-t0)/900); el.textContent=fmt(target*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+  got.forEach((b,i)=>setTimeout(()=>toast(b), 600+i*1200));
+}
+
+/* ================= Badges screen ================= */
+function badgesView(){
+  view="badges";
+  app.innerHTML=`<div class="ph"><button class="quit" id="back" aria-label="Back">${I.x}</button><h1>Badges</h1></div>
+    <div class="bgrid">${BADGES.map(b=>{ const on=!!G.badges[b.id]; return `<div class="badge ${on?"":"off"}"><div class="ic">${on?I[b.ic]:I.lock.replace('stroke="currentColor"','stroke="rgba(255,243,214,.5)"').replace('fill="currentColor"','fill="rgba(255,243,214,.5)"')}</div><b>${esc(b.name)}</b><span>${esc(b.how)}</span></div>`; }).join("")}</div>`;
+  document.getElementById("back").onclick=home;
+}
+
+/* ================= Settings ================= */
+function settingsView(msg){
+  view="settings";
+  const standalone = window.matchMedia && matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  app.innerHTML=`<div class="ph"><button class="quit" id="back" aria-label="Back">${I.x}</button><h1>Settings</h1></div>
+    <div class="panel"><div class="srow"><div><b>Show Cyrillic</b><p>Small Cyrillic under each Macedonian word.</p></div><button class="switch" id="cyr" aria-pressed="${G.cyr}" aria-label="Show Cyrillic"></button></div></div>
+    <div class="panel"><div class="srow"><div><b>Unlock every unit</b><p>Skip ahead on the map without earning stars first.</p></div><button class="switch" id="all" aria-pressed="${G.openAll}" aria-label="Unlock every unit"></button></div></div>
+    ${standalone?"":`<div class="panel"><h2>Install on your iPhone</h2><ol><li>Open this page in Safari.</li><li>Tap the Share button, then “Add to Home Screen”.</li><li>Open Zbor Igra from its new icon. It runs full-screen and works offline.</li></ol></div>`}
+    <div class="panel"><h2>Back up your progress</h2>
+      <p>Progress is saved on this device. Copy this code somewhere safe (Notes works) to restore it on a new phone.</p>
+      <textarea id="code" readonly aria-label="Backup code">${esc(btoa(unescape(encodeURIComponent(JSON.stringify(G)))))}</textarea>
+      <button class="btn cream" id="copy">Copy backup code</button>
+      <p style="margin-top:6px">To restore, paste a code here:</p>
+      <textarea id="restore" placeholder="Paste a backup code" aria-label="Restore code"></textarea>
+      <button class="btn cream" id="doRestore">Restore progress</button>
+      ${msg?`<p class="note ${msg[0]}">${esc(msg[1])}</p>`:""}
+    </div>
+    <div class="panel" id="resetBox"><h2>Start over</h2><p>Erase your level, stars, badges and scores on this device.</p><button class="btn cream" id="reset">Reset progress</button></div>`;
+  document.getElementById("back").onclick=home;
+  document.getElementById("cyr").onclick=e=>{ G.cyr=!G.cyr; save(); e.currentTarget.setAttribute("aria-pressed",G.cyr); applyCyr(); };
+  document.getElementById("all").onclick=e=>{ G.openAll=!G.openAll; save(); e.currentTarget.setAttribute("aria-pressed",G.openAll); };
+  document.getElementById("copy").onclick=async()=>{
+    const ta=document.getElementById("code");
+    try{ await navigator.clipboard.writeText(ta.value); settingsView(["ok","Backup code copied."]); }
+    catch(e){ ta.focus(); ta.select(); settingsView(["no","Couldn't copy automatically. Press and hold the code, then choose Copy."]); }
+  };
+  document.getElementById("doRestore").onclick=()=>{
+    const v=document.getElementById("restore").value.trim();
+    try{ const d=JSON.parse(decodeURIComponent(escape(atob(v)))); if(!d || typeof d.xp!=="number") throw 0; G=Object.assign(fresh(), d); save(); applyCyr(); settingsView(["ok","Progress restored."]); }
+    catch(e){ settingsView(["no","That code didn't work. Check that you pasted all of it."]); }
+  };
+  document.getElementById("reset").onclick=()=>{
+    document.getElementById("resetBox").innerHTML=`<h2>Erase everything?</h2><p>This can't be undone.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn cream" id="rNo">Keep it</button><button class="btn danger" id="rYes">Erase</button></div>`;
+    document.getElementById("rNo").onclick=()=>settingsView();
+    document.getElementById("rYes").onclick=()=>{ G=fresh(); save(); applyCyr(); home(); };
+  };
+}
+
+/* ================= Pause timers when the app is hidden ================= */
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState==="hidden"){
+    if(view==="round" && R && R.mode==="blitz"){ R.pausedLeft = R.endAt-Date.now(); }
+    if(tmr && view==="round"){ clearTimeout(tmr); tmr=null; R.resumeQ=true; }
+  } else if(view==="round" && R){
+    if(R.mode==="blitz" && R.pausedLeft!=null){ R.endAt=Date.now()+R.pausedLeft; R.pausedLeft=null; }
+    if(R.resumeQ){ R.resumeQ=false; renderCh(); }
+  }
+});
+
+applyCyr();
+home();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
+</body></html>

@@ -1,0 +1,16 @@
+{
+  "name": "Zbor Igra",
+  "short_name": "Zbor Igra",
+  "description": "A Macedonian word game: match, pick and build your way through 17 units.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#5e0b0d",
+  "theme_color": "#5e0b0d",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
