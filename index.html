@@ -75,10 +75,11 @@ svg{display:block}
 .chip > div{min-width:0}
 
 .playrow{display:grid;gap:12px;margin:16px 0 6px}
-.blitz{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);border-radius:20px;padding:12px 14px}
-.blitz b{display:block;font-weight:900;font-size:1.05rem}
-.blitz span{font-weight:700;color:var(--on-bg-muted);font-size:.85rem}
-.blitz .btn{width:auto;padding:11px 16px;font-size:.98rem}
+.side{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);border-radius:20px;padding:12px 14px}
+.side b{display:block;font-weight:900;font-size:1.05rem}
+.side span{font-weight:700;color:var(--on-bg-muted);font-size:.85rem}
+.side .btn{width:auto;padding:11px 16px;font-size:.98rem;flex:none}
+.side.tricky{background:rgba(255,201,41,.14);border-color:rgba(255,201,41,.45)}
 
 /* map */
 .maph{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 6px;font-weight:900;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--on-bg-muted)}
@@ -123,6 +124,71 @@ svg{display:block}
 .mk{font-weight:900}
 .cy{display:block;font-weight:700;font-size:.72em;color:var(--muted);margin-top:1px}
 .hide-cyr .cy{display:none!important}
+
+/* streak */
+.streak{background:var(--card-2);border-radius:18px;padding:12px;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center}
+.sbig{display:flex;align-items:center;gap:8px}
+.sbig svg{width:38px;height:38px;flex:none}
+.sbig b{display:block;font-size:1.6rem;font-weight:900;line-height:1}
+.sbig span{display:block;font-size:.72rem;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.week{grid-column:1/-1;display:flex;justify-content:space-between;gap:2px;background:var(--card);border-radius:12px;padding:6px 8px}
+.wd{display:grid;justify-items:center;font-size:.66rem;font-weight:900;color:var(--muted);width:30px}
+.wd svg{width:22px;height:22px}
+.wd.today span{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.wd.fut{opacity:.55}
+.snote{grid-column:1/-1;margin:0;font-weight:800;font-size:.85rem;color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* status pills */
+.st{display:block;font-style:normal;font-size:.68rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.st.known{color:var(--good)} .st.learning{color:var(--gold-deep)} .st.tricky{color:var(--bad)} .st.new{color:var(--lock)}
+
+/* flashcards */
+.fcount{font-weight:900;font-size:.9rem;color:var(--on-bg-muted);min-width:44px;text-align:right}
+.fcard{position:relative;height:min(52vh,380px);margin-bottom:16px;perspective:1200px;cursor:pointer;outline:none}
+.fcard .face{position:absolute;inset:0;background:var(--card);color:var(--ink);border-radius:26px;box-shadow:0 7px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.fcard .back{transform:rotateY(180deg);background:#fffaf0}
+.fcard.flip .front{transform:rotateY(-180deg)}
+.fcard.flip .back{transform:rotateY(0)}
+.fcard:focus-visible .face{outline:3px solid var(--gold);outline-offset:3px}
+.fcard .big{font-size:clamp(2rem,10vw,3rem);font-weight:900;line-height:1.15;overflow-wrap:anywhere}
+.fcard .big.s{font-size:clamp(1.35rem,6.5vw,2rem)}
+.fcard .big .cy{font-size:.45em;margin-top:8px}
+.ftag{position:absolute;top:16px;left:16px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fmk{font-size:1.15rem}
+.hint{margin:0;font-weight:700;font-size:.85rem;color:var(--muted)}
+
+/* tap a word for its meaning */
+.def{border-bottom:2px dotted rgba(134,99,76,.55);cursor:pointer}
+.fb .def{border-bottom-color:rgba(43,22,8,.35)}
+.defpop{position:fixed;z-index:50;max-width:260px;background:var(--ink);color:#fff3d6;border-radius:12px;padding:8px 12px;font-weight:700;font-size:.92rem;box-shadow:0 8px 20px rgba(0,0,0,.35);animation:fade .12s;pointer-events:none}
+.defpop b{color:var(--gold);margin-right:4px}
+
+/* mistake explanation */
+.fbl{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;background:#fff;border-radius:14px;padding:10px 12px;font-weight:700;line-height:1.45}
+.fbl i{font-style:normal;font-weight:900;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.85rem}
+.fbl.ok i{background:var(--good)} .fbl.no i{background:var(--bad)}
+.fbl .cy{display:inline;font-size:.82em;margin:0 2px}
+.fbl .eq{color:var(--muted);font-weight:700}
+.tip{font-size:.8rem!important;color:var(--muted);font-weight:700!important}
+.relaxtag{background:var(--good);color:#fff;font-weight:900;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:10px}
+.wt.good{background:var(--good);color:#fff;box-shadow:0 4px 0 #0f6a36}
+.wt.good .cy{color:#d5f5e2}
+
+/* my words */
+.vgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.vt{background:var(--card);color:var(--ink);border-radius:16px;padding:10px 4px;display:grid;justify-items:center;gap:2px;box-shadow:0 4px 0 rgba(0,0,0,.18);border:3px solid transparent}
+.vt b{font-size:1.4rem;font-weight:900}
+.vt span{font-size:.7rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.vt.known b{color:var(--good)} .vt.learning b{color:var(--gold-deep)} .vt.tricky b{color:var(--bad)} .vt.new b{color:var(--lock)}
+.vt.on{border-color:var(--gold)}
+.vbar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:rgba(0,0,0,.25);margin-bottom:8px}
+.vbar i{display:block;height:100%}
+.vbar .known{background:var(--good)} .vbar .learning{background:var(--gold)} .vbar .tricky{background:#ff7a4d}
+.vnote{margin:0 0 14px;font-weight:700;color:var(--on-bg-muted);font-size:.9rem}
+.linkbtn{color:var(--gold);font-weight:900;text-decoration:underline}
+.toast .tic{width:40px;height:40px;border-radius:50%;background:var(--gold);display:grid;place-items:center;flex:none}
+.toast .tic svg{width:24px;height:24px}
 
 /* round HUD */
 .hud{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -190,6 +256,7 @@ svg{display:block}
 /* feedback panel */
 .fb{position:fixed;left:0;right:0;bottom:0;z-index:15;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0;animation:up .18s cubic-bezier(.2,.8,.2,1)}
 .fb .in{max-width:520px;margin:0 auto;display:grid;gap:10px}
+.fb{max-height:78%;overflow:auto}
 .fb.no{background:var(--bad-soft);color:var(--ink)}
 .fb.ok{background:var(--good-soft);color:var(--ink)}
 .fb h3{margin:0;font-size:1.2rem;font-weight:900}
@@ -256,6 +323,8 @@ textarea{width:100%;min-height:84px;border-radius:14px;border:2px solid var(--li
 .toast span{display:block;font-size:.78rem;color:var(--muted);font-weight:700}
 @keyframes toast{0%{opacity:0;transform:translate(-50%,-20px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-20px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.tile.bad .cy,.tile.sel .cy{color:inherit;opacity:.8}
 
 .wrap{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}</style>
 </head><body>
@@ -470,6 +539,31 @@ textarea{width:100%;min-height:84px;border-radius:14px;border:2px solid var(--li
 
 ];
 
+/* Short meanings for words that appear inside sentences but aren't vocabulary items themselves.
+   Used for tap-to-define and for explaining mistakes. */
+const GLOSS = {
+  si:"(you) are", sum:"(I) am", se:"oneself (reflexive word)", vikash:"(you) are called", jas:"I", vikam:"(I) am called",
+  marko:"Marko (a name)", mi:"to me, my", e:"is", drago:"glad, pleasing", od:"from", turist:"tourist", gledame:"(we) see",
+  ova:"this", mojata:"my (the, feminine)", dve:"two (feminine)", sestri:"sisters", ti:"you, your", doma:"at home",
+  dali:"question word: is it…?", imash:"(you) have", deca:"children", edno:"one (neuter)", te:"you", molam:"(I) ask; te molam = please",
+  imate:"(you, formal) have", li:"question word", kolku:"how much, how many", chini:"costs", mnogu:"very, a lot",
+  vkusno:"tasty", na:"on, to, at", zdravje:"health", kucheto:"the dog", knigata:"the book", masata:"the table",
+  otvori:"open!", ja:"it, her", vratata:"the door", toaletot:"the toilet", avtobuskata:"bus (the); avtobuskata stanica = the bus station",
+  stanica:"station", odete:"go! (formal)", svrtete:"turn! (formal)", zboruvate:"(you, formal) speak", angliski:"English",
+  poleka:"slowly", pravish:"(you) do", kje:"will (future)", vidime:"(we) see", vo:"in, at", chasot:"the hour, the time",
+  dojdi:"come!", zafaten:"busy", so:"with", malku:"a little", makedonski:"Macedonian (language)", skopje:"Skopje (the capital)",
+  mozhete:"(you, formal) can", povtorite:"repeat", znachi:"means", zadovolstvo:"pleasure", dobredojdovte:"welcome (to a group)",
+  kukjata:"the house", golema:"big (feminine)", crvena:"red (feminine)", kola:"car", ubavo:"nice, beautiful", malo:"small (neuter)",
+  i:"and", crno:"black (neuter)", stara:"old (feminine)", chaj:"tea", toa:"that, it", premnogu:"too, too much", platam:"(I) pay",
+  kartichka:"card", smetkata:"the bill", pazarot:"the market", godini:"years", denari:"denars", avtobusot:"the bus",
+  doagja:"comes", sobata:"the room", broj:"number", aerodromot:"the airport", patuvam:"(I) travel", za:"for", edna:"one (feminine)",
+  soba:"room", mojot:"my (the, masculine)", let:"flight", biletot:"the ticket", kakvo:"what kind, how", vremeto:"the weather",
+  vrne:"falls (rain or snow)", bide:"be", deka:"that", dopagja:"pleases; mi se dopagja = I like", makedonija:"Macedonia",
+  me:"me", boli:"hurts", stomakot:"the stomach", treba:"is needed; mi treba = I need", ima:"there is, has", umoren:"tired",
+  chuvstvuvam:"(I) feel", podobro:"better", ajde:"come on, let's", sakash:"(you) want", moj:"my", odime:"(we) go",
+  ovaa:"this (feminine)", vecherva:"tonight", nema:"there isn't, has no", problem:"problem"
+};
+
 /* ================= Course items ================= */
 const ITEMS = [];
 UNITS.forEach((u,ui)=>{
@@ -480,6 +574,8 @@ UNITS.forEach((u,ui)=>{
   }));
 });
 const ITEM = Object.fromEntries(ITEMS.map(it=>[it.key,it]));
+const WORD_BY_LAT = {};
+ITEMS.filter(x=>x.kind==="w").forEach(x=>{ WORD_BY_LAT[x.lat.toLowerCase()] = x; });
 
 /* ================= Helpers ================= */
 const app = document.getElementById("app");
@@ -495,6 +591,17 @@ const store = {
   get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v); }catch(e){ return d; } },
   set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
+/* meaning of a single Macedonian word, for tap-to-define and mistake explanations */
+function meaningOf(tok){
+  const k = tok.toLowerCase().replace(/[.,!?]/g,"");
+  if(WORD_BY_LAT[k]) return WORD_BY_LAT[k].en;
+  if(GLOSS[k]) return GLOSS[k];
+  return null;
+}
+/* a Macedonian sentence or phrase with every word tappable for its meaning */
+function defLine(lat){
+  return lat.split(/\s+/).map(w=>{ const m=meaningOf(w); return m?`<span class="def" data-def="${esc(w.replace(/[.,!?]/g,""))}">${esc(w)}</span>`:esc(w); }).join(" ");
+}
 
 /* ================= Icons ================= */
 const I = {
@@ -503,7 +610,8 @@ const I = {
   heart:(on=true)=>`<svg viewBox="0 0 24 24"><path d="M12 20.5s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.3 4.6 4.6 0 0 1 20 9.5c0 6.1-8 11-8 11z" fill="${on?"#ff5a4f":"rgba(255,255,255,.3)"}" stroke="${on?"#fff3d6":"none"}" stroke-width="1.6"/></svg>`,
   bolt:`<svg viewBox="0 0 24 24"><path d="M13.5 2L4 13.5h6.5L9.5 22 20 9.5h-6.5z" fill="currentColor"/></svg>`,
   sun:`<svg viewBox="0 0 40 40"><g stroke="#ffc929" stroke-width="3" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>`<line x1="20" y1="3" x2="20" y2="9" transform="rotate(${a} 20 20)"/>`).join("")}</g><circle cx="20" cy="20" r="8.5" fill="#ffc929"/></svg>`,
-  sunInk:`<svg viewBox="0 0 40 40"><g stroke="#e0461f" stroke-width="3.4" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>`<line x1="20" y1="3" x2="20" y2="9" transform="rotate(${a} 20 20)"/>`).join("")}</g><circle cx="20" cy="20" r="8.5" fill="#e0461f"/></svg>`,
+  flame:(on=true)=>`<svg viewBox="0 0 24 24"><path d="M12 2.5c.6 3.2 4.8 5.3 4.8 10.2A4.8 4.8 0 0 1 12 21.5a4.8 4.8 0 0 1-4.8-4.8c0-2.6 1.4-3.9 2.3-5.2.3 1.5 1.1 2.4 2 2.6C10.6 11 10.9 6.3 12 2.5z" fill="${on?"#ff7a2e":"rgba(43,22,8,.2)"}"/><path d="M12 13.2c.4 1.5 2.2 2.4 2.2 4.3a2.2 2.2 0 0 1-4.4 0c0-1.3.7-2 1.2-2.6.1.6.4 1 .8 1.1-.2-1 0-1.9.2-2.8z" fill="${on?"#ffc929":"rgba(43,22,8,.12)"}"/></svg>`,
+  book:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>`,
   lock:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>`,
   x:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
   gear:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M2.5 12h3M18.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>`,
@@ -513,13 +621,18 @@ const I = {
   boltInk:`<svg viewBox="0 0 24 24"><path d="M13.5 2L4 13.5h6.5L9.5 22 20 9.5h-6.5z" fill="#2b1608"/></svg>`,
   heartInk:`<svg viewBox="0 0 24 24"><path d="M12 20.5s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.3 4.6 4.6 0 0 1 20 9.5c0 6.1-8 11-8 11z" fill="#2b1608"/></svg>`,
   starDark:`<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.2l-5.8 3.2 1.2-6.5L2.6 9.4l6.5-.8z" fill="#2b1608"/></svg>`,
+  flameInk:`<svg viewBox="0 0 24 24"><path d="M12 2.5c.6 3.2 4.8 5.3 4.8 10.2A4.8 4.8 0 0 1 12 21.5a4.8 4.8 0 0 1-4.8-4.8c0-2.6 1.4-3.9 2.3-5.2.3 1.5 1.1 2.4 2 2.6C10.6 11 10.9 6.3 12 2.5z" fill="#2b1608"/></svg>`,
+  bookInk:`<svg viewBox="0 0 24 24" fill="none" stroke="#2b1608" stroke-width="2.6" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z" fill="#2b1608"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>`,
   medal:`<svg viewBox="0 0 24 24"><path d="M7 2h4l1 5-3 1zM17 2h-4l-1 5 3 1z" fill="#2b1608"/><circle cx="12" cy="15" r="6.5" fill="#2b1608"/><path d="M12 11.5l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#ffc929"/></svg>`
 };
 
 /* ================= Saved progress (this device) ================= */
 const KEY = "zbor-igra-v1";
-function fresh(){ return {v:1, xp:0, units:{}, badges:{}, days:{}, blitzBest:0, rounds:0, perfect:0, bestCombo:0, fastestMatch:0, miss:{}, cyr:true, openAll:false}; }
+function fresh(){ return {v:2, xp:0, units:{}, badges:{}, days:{}, blitzBest:0, rounds:0, perfect:0, bestCombo:0, fastestMatch:0,
+  miss:{}, vocab:{}, learned:{}, bestStreak:0, cleared:0, cyr:true, openAll:false}; }
 let G = Object.assign(fresh(), store.get(KEY, {}));
+// units played before flashcards existed count as already studied
+Object.entries(G.units).forEach(([id,r])=>{ if(r && r.plays>0) G.learned[id]=true; });
 const save = () => store.set(KEY, G);
 const U = id => G.units[id] || (G.units[id] = {stars:0, best:0, plays:0});
 const unlocked = i => G.openAll || i===0 || (G.units[UNITS[i-1].id]||{}).stars>0;
@@ -531,10 +644,30 @@ function streakDays(){
   while(G.days[dayKey(t)]){ n++; t-=DAY; }
   return n;
 }
+const playedToday = () => !!G.days[dayKey()];
 function nextUnit(){
   for(let i=0;i<UNITS.length;i++) if(unlocked(i) && !((G.units[UNITS[i].id]||{}).stars>0)) return i;
   for(let i=0;i<UNITS.length;i++) if(unlocked(i) && (G.units[UNITS[i].id]||{}).stars<3) return i;
   return 0;
+}
+
+/* ================= Vocabulary tracking ================= */
+// new: never answered · learning: seen, not solid yet · known: right 3+ times with nothing outstanding · tricky: missed and not yet re-earned
+function status(it){
+  const v=G.vocab[it.key], m=G.miss[it.key]||0;
+  if(!v) return "new";
+  if(m>=1) return "tricky";
+  if(v.c>=3 && m===0) return "known";
+  return "learning";
+}
+const knownCount = () => ITEMS.filter(it=>status(it)==="known").length;
+const trickyItems = () => ITEMS.filter(it=>(G.miss[it.key]||0)>0).sort((a,b)=>(G.miss[b.key]-G.miss[a.key])||((G.vocab[b.key]||{}).t-(G.vocab[a.key]||{}).t));
+function noteAnswer(it, ok){
+  if(!it) return;
+  const v = G.vocab[it.key] || (G.vocab[it.key]={c:0,w:0,t:0});
+  if(ok){ v.c++; if(G.miss[it.key]){ G.miss[it.key]--; if(!G.miss[it.key]){ delete G.miss[it.key]; G.cleared++; } } }
+  else { v.w++; G.miss[it.key]=(G.miss[it.key]||0)+1; }
+  v.t=Date.now();
 }
 
 /* ================= Levels ================= */
@@ -553,30 +686,52 @@ const BADGES = [
   {id:"units17", ic:"trophy",  name:"Grand tour",     how:"Clear all 17 units"},
   {id:"stars25", ic:"starDark",name:"Star collector", how:"Earn 25 stars"},
   {id:"stars51", ic:"starDark",name:"Every star",     how:"Earn all 51 stars"},
+  {id:"words50", ic:"bookInk", name:"50 words",       how:"Know 50 words and phrases"},
+  {id:"words150",ic:"bookInk", name:"150 words",      how:"Know 150 words and phrases"},
+  {id:"fixer",   ic:"bookInk", name:"Fixer",          how:"Clear 10 words from your tricky list"},
   {id:"blitz2k", ic:"boltInk", name:"Quick thinker",  how:"Score 2,000 in Blitz"},
-  {id:"blitz5k", ic:"boltInk", name:"Blitz champion", how:"Score 5,000 in Blitz"},
-  {id:"days3",   ic:"clock",   name:"Three in a row", how:"Play 3 days in a row"},
-  {id:"days7",   ic:"clock",   name:"Full week",      how:"Play 7 days in a row"},
+  {id:"days3",   ic:"flameInk",name:"Three in a row", how:"Play 3 days in a row"},
+  {id:"days7",   ic:"flameInk",name:"Full week",      how:"Play 7 days in a row"},
+  {id:"days30",  ic:"flameInk",name:"Month strong",   how:"Play 30 days in a row"},
   {id:"xp10k",   ic:"medal",   name:"10,000 club",    how:"Earn 10,000 points in total"},
   {id:"lvl10",   ic:"medal",   name:"Poznavach",      how:"Reach level 10"}
 ];
-function checkBadges(ctx={}){
-  const L = levelOf(G.xp), st = totalStars(), cu = clearedUnits(), sd = streakDays();
+function checkBadges(){
+  const L=levelOf(G.xp), st=totalStars(), cu=clearedUnits(), sd=Math.max(streakDays(), G.bestStreak), kn=knownCount();
   const tests = {
-    first: G.rounds>=1, perfect: G.perfect>=1, combo10: G.bestCombo>=10,
-    fast: G.fastestMatch>0 && G.fastestMatch<15, units5: cu>=5, units17: cu>=17,
-    stars25: st>=25, stars51: st>=51, blitz2k: G.blitzBest>=2000, blitz5k: G.blitzBest>=5000,
-    days3: sd>=3, days7: sd>=7, xp10k: G.xp>=10000, lvl10: L>=10
+    first:G.rounds>=1, perfect:G.perfect>=1, combo10:G.bestCombo>=10, fast:G.fastestMatch>0&&G.fastestMatch<15,
+    units5:cu>=5, units17:cu>=17, stars25:st>=25, stars51:st>=51, words50:kn>=50, words150:kn>=150, fixer:G.cleared>=10,
+    blitz2k:G.blitzBest>=2000, days3:sd>=3, days7:sd>=7, days30:sd>=30, xp10k:G.xp>=10000, lvl10:L>=10
   };
-  const got = [];
+  const got=[];
   BADGES.forEach(b=>{ if(tests[b.id] && !G.badges[b.id]){ G.badges[b.id]=Date.now(); got.push(b); } });
   return got;
 }
 function toast(b){
   const t=document.createElement("div"); t.className="toast";
-  t.innerHTML=`<div class="badge" style="padding:0;box-shadow:none;background:none"><div class="ic" style="width:40px;height:40px">${I[b.ic]}</div></div><div>${esc(b.name)}<span>Badge unlocked</span></div>`;
+  t.innerHTML=`<div class="tic">${I[b.ic]}</div><div>${esc(b.name)}<span>Badge unlocked</span></div>`;
   document.body.appendChild(t); setTimeout(()=>t.remove(), 3000);
 }
+
+/* ================= Tap a word to see its meaning (never pauses anything) ================= */
+let popTimer=null;
+function showDef(el){
+  document.querySelectorAll(".defpop").forEach(p=>p.remove());
+  const w=el.dataset.def, m=meaningOf(w); if(!m) return;
+  const p=document.createElement("div"); p.className="defpop";
+  p.innerHTML=`<b>${esc(w)}</b> ${esc(m)}`;
+  document.body.appendChild(p);
+  const r=el.getBoundingClientRect(), pw=p.offsetWidth, ph=p.offsetHeight;
+  let x=r.left+r.width/2-pw/2; x=Math.max(10, Math.min(window.innerWidth-pw-10, x));
+  let y=r.top-ph-10; if(y<10) y=r.bottom+10;
+  p.style.left=x+"px"; p.style.top=y+"px";
+  clearTimeout(popTimer); popTimer=setTimeout(()=>p.remove(), 2600);
+}
+document.addEventListener("click", e=>{
+  const d=e.target.closest && e.target.closest("[data-def]");
+  if(d){ showDef(d); return; }
+  document.querySelectorAll(".defpop").forEach(p=>p.remove());
+});
 
 /* ================= Shell ================= */
 let view = "home";
@@ -585,22 +740,29 @@ function topbar(){
   return `<div class="topbar">
     <div class="brand">${I.sun.replace("<svg","<svg width=\"34\" height=\"34\"")}<div>Zbor Igra<small>ЗБОР ИГРА · WORD GAME</small></div></div>
     <div style="display:flex;gap:8px">
+      <button class="iconbtn" id="goWords" aria-label="My words">${I.book}</button>
       <button class="iconbtn" id="goBadges" aria-label="Badges">${I.star(true)}</button>
       <button class="iconbtn" id="goSet" aria-label="Settings">${I.gear}</button>
     </div></div>`;
 }
 function bindTop(){
+  document.getElementById("goWords").onclick = ()=>wordsView();
   document.getElementById("goBadges").onclick = badgesView;
-  document.getElementById("goSet").onclick = settingsView;
+  document.getElementById("goSet").onclick = ()=>settingsView();
+}
+function weekDots(){
+  const dow=(new Date().getDay()+6)%7, L=["M","T","W","T","F","S","S"];
+  return L.map((l,i)=>{ const t=Date.now()+(i-dow)*DAY, on=!!G.days[dayKey(t)];
+    return `<div class="wd ${on?"on":""} ${i===dow?"today":""} ${i>dow?"fut":""}">${I.flame(on)}<span>${l}</span></div>`; }).join("");
 }
 
 /* ================= Home ================= */
 function home(){
   view="home"; stopTimers();
-  const L = levelOf(G.xp), t = titleOf(L), lo = xpFor(L), hi = xpFor(L+1);
-  const pct = Math.min(100, (G.xp-lo)/(hi-lo)*100);
-  const ni = nextUnit(), nu = UNITS[ni], nuStars = (G.units[nu.id]||{}).stars||0;
-  const pos = ["c","r","c","l"];
+  const L=levelOf(G.xp), t=titleOf(L), lo=xpFor(L), hi=xpFor(L+1), pct=Math.min(100,(G.xp-lo)/(hi-lo)*100);
+  const ni=nextUnit(), nu=UNITS[ni], nuStars=(G.units[nu.id]||{}).stars||0;
+  const sd=streakDays(), tr=trickyItems();
+  const pos=["c","r","c","l"];
   app.innerHTML = topbar() + `
     <div class="player">
       <div class="prow">
@@ -608,15 +770,21 @@ function home(){
         <div class="ptitle"><b>Level ${L} · ${t[1]}</b><span>${t[2]} · <span class="num">${fmt(G.xp-lo)} / ${fmt(hi-lo)}</span> XP to level ${L+1}</span>
           <div class="xpbar"><i style="width:${pct}%"></i></div></div>
       </div>
+      <div class="streak">
+        <div class="sbig">${I.flame(sd>0)}<div class="num"><b>${sd}</b><span>day streak${G.bestStreak>sd?` · best ${G.bestStreak}`:""}</span></div></div>
+        <div class="week">${weekDots()}</div>
+        <p class="snote">${playedToday()?"You've played today. Streak safe.":sd?"Play today to keep your streak going.":"Play today to start a streak."}</p>
+      </div>
       <div class="chips">
+        <div class="chip">${I.bookInk.replace(/#2b1608/g,"#c98b00")}<div class="num">${knownCount()}<span>words known</span></div></div>
         <div class="chip">${I.starInk}<div class="num">${totalStars()}<span>of 51 stars</span></div></div>
-        <div class="chip">${I.sunInk}<div class="num">${streakDays()}<span>day streak</span></div></div>
         <div class="chip">${I.trophy.replace(/#2b1608/g,"#c98b00")}<div class="num">${Object.keys(G.badges).length}<span>of ${BADGES.length} badges</span></div></div>
       </div>
     </div>
     <div class="playrow">
-      <button class="btn" id="playNext">Play ${esc(nu.name)}<small>${nuStars?`${nuStars}/3 stars`:"New"}</small></button>
-      <div class="blitz"><div><b>Blitz · 60 seconds</b><span>Best <span class="num">${fmt(G.blitzBest)}</span> · every word you've unlocked</span></div><button class="btn cream" id="playBlitz">Go</button></div>
+      <button class="btn" id="playNext">${G.learned[nu.id]?"Play":"Learn"} ${esc(nu.name)}<small>${nuStars?`${nuStars}/3 stars`:G.learned[nu.id]?"Ready":"New words"}</small></button>
+      ${tr.length?`<div class="side tricky"><div><b>Tricky words · ${tr.length}</b><span>Relaxed review: no timer, no hearts</span></div><button class="btn cream" id="playReview">Review</button></div>`:""}
+      <div class="side"><div><b>Blitz · 60 seconds</b><span>Best <span class="num">${fmt(G.blitzBest)}</span> · every unlocked word</span></div><button class="btn cream" id="playBlitz">Go</button></div>
     </div>
     <div class="maph"><span>Map</span><span class="num">${clearedUnits()} of ${UNITS.length} cleared</span></div>
     <div class="map" id="map">
@@ -625,15 +793,16 @@ function home(){
         const s=(G.units[u.id]||{}).stars||0, lock=!unlocked(i), cur=i===ni;
         const cls = lock?"locked":cur?"cur":s===3?"done3":"";
         return `<div class="stop ${pos[i%4]} ${lock?"lockd":""}">
-          ${cur?`<div class="tag-cur">${s?"Next":"Start"}</div>`:""}
+          ${cur?`<div class="tag-cur">${G.learned[u.id]?(s?"Next":"Play"):"Learn"}</div>`:""}
           <button class="node ${cls}" data-u="${i}" aria-label="${esc(u.name)}${lock?", locked":`, ${s} stars`}">${lock?I.lock:s===3?I.star(true).replace('fill="#ffc929"','fill="#fff"').replace('stroke="#c98b00"','stroke="#fff"'):i+1}</button>
           <div class="stars">${[1,2,3].map(n=>I.star(s>=n)).join("")}</div>
           <div class="sname">${esc(u.name)}</div>
         </div>`;}).join("")}
     </div>`;
   bindTop(); applyCyr();
-  document.getElementById("playNext").onclick = ()=>startRound(ni);
+  document.getElementById("playNext").onclick = ()=>enterUnit(ni);
   document.getElementById("playBlitz").onclick = startBlitz;
+  const rv=document.getElementById("playReview"); if(rv) rv.onclick=startReview;
   app.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>unitSheet(+b.dataset.u));
   requestAnimationFrame(drawTrail);
 }
@@ -655,13 +824,52 @@ function unitSheet(i){
   sc.innerHTML=`<div class="sheet" role="dialog" aria-label="${esc(u.name)}"><div class="grab"></div>
     <h2>${esc(u.name)}</h2>
     <p class="sub">Unit ${i+1} · ${u.words.length} words${u.sentences.length?` · ${u.sentences.length} sentences`:""}</p>
-    <div class="row"><div class="num">${rec.stars}/3<span>Stars</span></div><div class="num">${fmt(rec.best)}<span>Best score</span></div><div class="num">${rec.plays}<span>Plays</span></div></div>
-    ${lock?`<button class="btn cream" disabled>Locked: earn a star in ${esc(UNITS[i-1].name)}</button>`:`<button class="btn" id="sheetPlay">${rec.plays?"Play again":"Play"}</button>`}
-    <ul class="wl">${u.items.map(it=>`<li><div>${mk(it)}</div><div class="en">${esc(it.en)}</div></li>`).join("")}</ul>
+    <div class="row"><div class="num">${rec.stars}/3<span>Stars</span></div><div class="num">${fmt(rec.best)}<span>Best score</span></div><div class="num">${u.items.filter(it=>status(it)==="known").length}/${u.items.length}<span>Known</span></div></div>
+    ${lock?`<button class="btn cream" disabled>Locked: earn a star in ${esc(UNITS[i-1].name)}</button>`
+      :`<div class="two"><button class="btn cream" id="sheetLearn">Flashcards</button><button class="btn" id="sheetPlay">${G.learned[u.id]?(rec.plays?"Play again":"Play"):"Learn & play"}</button></div>`}
+    <ul class="wl">${u.items.map(it=>`<li><div>${mk(it)}</div><div class="en">${esc(it.en)}<i class="st ${status(it)}">${status(it)}</i></div></li>`).join("")}</ul>
   </div>`;
   document.body.appendChild(sc); applyCyr();
   sc.onclick=e=>{ if(e.target===sc) sc.remove(); };
-  const p=sc.querySelector("#sheetPlay"); if(p) p.onclick=()=>{ sc.remove(); startRound(i); };
+  const p=sc.querySelector("#sheetPlay"); if(p) p.onclick=()=>{ sc.remove(); enterUnit(i); };
+  const l=sc.querySelector("#sheetLearn"); if(l) l.onclick=()=>{ sc.remove(); flashcards(i, false); };
+}
+function enterUnit(i){ if(G.learned[UNITS[i].id]) startRound(i); else flashcards(i, true); }
+
+/* ================= Flashcards ================= */
+function flashcards(ui, thenPlay){
+  view="learn"; stopTimers();
+  const u=UNITS[ui], deck=u.items; let k=0, flipped=false;
+  const draw=()=>{
+    const it=deck[k], last=k===deck.length-1, sent=it.kind==="s";
+    app.innerHTML=`<div class="hud"><button class="quit" id="quit" aria-label="Close">${I.x}</button>
+        <div class="rprog"><i style="width:${(k+1)/deck.length*100}%"></i></div><div class="num fcount">${k+1}/${deck.length}</div></div>
+      <p class="qlabel">${thenPlay?"Learn these first":"Flashcards"} · ${esc(u.name)}</p>
+      <div class="fcard ${flipped?"flip":""}" id="card" role="button" tabindex="0" aria-label="Flip card">
+        <div class="face front"><span class="ftag">${sent?"Phrase":"Word"}</span><div class="big ${sent?"s":""}"><span class="mk">${esc(it.lat)}</span><span class="cy">${esc(it.cyr)}</span></div><p class="hint">Tap to see the meaning</p></div>
+        <div class="face back"><span class="ftag">Meaning</span><div class="big ${sent?"s":""}" style="color:var(--ink)">${esc(it.en)}</div>
+          <div class="fmk"><span class="mk">${sent?defLine(it.lat):esc(it.lat)}</span><span class="cy">${esc(it.cyr)}</span></div>
+          ${sent?`<p class="hint">Tap a word to see what it means</p>`:""}</div>
+      </div>
+      <div class="two"><button class="btn cream" id="prev" ${k===0?"disabled":""}>Back</button>
+        <button class="btn" id="nextc">${last?(thenPlay?"Start the round":"Done"):"Next"}</button></div>`;
+    applyCyr();
+    const card=document.getElementById("card");
+    card.onclick=e=>{ if(e.target.closest("[data-def]")) return; flipped=!flipped; card.classList.toggle("flip", flipped); };
+    card.onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); card.click(); } };
+    document.getElementById("quit").onclick=home;
+    document.getElementById("prev").onclick=()=>{ if(k>0){ k--; flipped=false; draw(); } };
+    document.getElementById("nextc").onclick=()=>{
+      if(!last){ k++; flipped=false; draw(); return; }
+      G.learned[u.id]=true; save();
+      thenPlay ? startRound(ui) : home();
+    };
+    let x0=null;
+    card.addEventListener("touchstart",e=>{ x0=e.touches[0].clientX; },{passive:true});
+    card.addEventListener("touchend",e=>{ if(x0===null) return; const dx=e.changedTouches[0].clientX-x0; x0=null;
+      if(Math.abs(dx)>60){ if(dx<0 && !last){ k++; flipped=false; draw(); } else if(dx>0 && k>0){ k--; flipped=false; draw(); } } });
+  };
+  draw();
 }
 
 /* ================= Challenge building ================= */
@@ -698,213 +906,264 @@ function buildTiles(it){
   }
   return shuffle([...tiles,...extra]).map((t,i)=>({...t,id:i}));
 }
-const LIMIT = {pickEn:10, pickMk:10, tf:6, cloze:15, build:25, match:45};
+const LIMIT = {pickEn:10, pickMk:10, cloze:20, build:30, match:45};
 function makeCh(type, it, extra={}){
   const c={type, it, limit:LIMIT[type], ...extra};
   if(type==="pickEn") c.opts=options(it, it.kind==="s"?3:4, "en");
   if(type==="pickMk") c.opts=options(it, it.kind==="s"?3:4, "lat");
-  if(type==="tf"){ c.truth=Math.random()<.5; c.shown = c.truth ? it : options(it,4,"en").find(x=>x!==it) || it; if(c.shown===it) c.truth=true; }
   if(type==="cloze") c.cloze=makeCloze(it);
   if(type==="build") c.tiles=buildTiles(it);
   return c;
 }
+const matchCh = group => ({type:"match", group, limit:LIMIT.match});
 const weakFirst = arr => [...arr].sort((a,b)=>((G.miss[b.key]||0)+Math.random()*1.5)-((G.miss[a.key]||0)+Math.random()*1.5));
+function board(primary, fillers){
+  const g=[], seenEn=new Set();
+  for(const x of [...primary, ...fillers]){ if(g.length>=5) break; const e=x.en.toLowerCase(); if(!seenEn.has(e) && !g.includes(x)){ g.push(x); seenEn.add(e); } }
+  return g;
+}
+/* a round is mostly match boards, finish-the-sentence and build-the-sentence, with a couple of quick picks for variety */
 function buildRound(ui){
   const u=UNITS[ui];
-  const W=shuffle(u.items.filter(x=>x.kind==="w")), S=shuffle(u.items.filter(x=>x.kind==="s"));
-  const review=weakFirst(ITEMS.filter(x=>x.unit<ui && unlocked(x.unit) && x.kind==="w")).slice(0, ui>0?2:0);
+  const W=weakFirst(u.items.filter(x=>x.kind==="w")), S=shuffle(u.items.filter(x=>x.kind==="s"));
+  const review=weakFirst(ITEMS.filter(x=>x.unit<ui && unlocked(x.unit) && x.kind==="w"));
+  const b1=board(W.slice(0,5), W.slice(5)), rest=W.filter(x=>!b1.includes(x));
+  const b2=board(rest, [...review.slice(0,3), ...W]);
   const out=[];
-  const matchSet=W.slice(0,5);
-  const singles=[...W.slice(5), ...W.slice(0,5)];
-  // warm-up: quick true/false, then picks
-  out.push(makeCh("tf", singles[0]));
-  out.push(makeCh("pickEn", singles[1]));
-  out.push(makeCh("pickMk", singles[2]));
-  out.push({type:"match", group:matchSet, limit:LIMIT.match});
-  out.push(makeCh("tf", singles[3%singles.length]));
-  review.forEach(it=>out.push(makeCh(pick(["pickEn","pickMk"]), it)));
   if(S.length){
-    out.push(makeCh("pickEn", S[0]));
-    out.push(makeCh("cloze", S[1%S.length]));
+    out.push(matchCh(b1));
+    out.push(makeCh("pickEn", rest[0]||W[0]));
+    out.push(makeCh("cloze", S[0]));
+    out.push(makeCh("build", S[1%S.length]));
+    out.push(matchCh(b2));
     out.push(makeCh("cloze", S[2%S.length]));
     out.push(makeCh("build", S[3%S.length]));
-    out.push(makeCh("pickMk", S[4%S.length]));
+    out.push(makeCh("pickMk", review[0]||W[1]));
+    out.push(makeCh("cloze", S[4%S.length]));
+    out.push(makeCh("build", S[5%S.length]));
   } else {
-    [4,5,6,7,8].forEach((k,j)=>out.push(makeCh(["pickEn","pickMk","tf","pickEn","pickMk"][j], singles[k%singles.length])));
+    const b3=board(shuffle(W), review.slice(3));
+    out.push(matchCh(b1)); out.push(makeCh("pickEn", W[0])); out.push(matchCh(b2));
+    out.push(makeCh("pickMk", W[1])); out.push(matchCh(b3)); out.push(makeCh("pickEn", W[2])); out.push(makeCh("pickMk", W[3]));
   }
+  return out;
+}
+function buildReview(){
+  const tr=trickyItems().slice(0,12), w=tr.filter(x=>x.kind==="w"), s=tr.filter(x=>x.kind==="s"), out=[];
+  for(let i=0;i<w.length;i+=5){
+    const grp=w.slice(i,i+5);
+    if(grp.length>=3) out.push(matchCh(board(grp, [])));
+    grp.forEach((it,j)=>out.push(makeCh(j%2?"pickMk":"pickEn", it)));
+  }
+  s.forEach((it,j)=>out.push(makeCh(j%2?"build":"cloze", it)));
   return out;
 }
 
 /* ================= Round engine ================= */
 let R=null, tmr=null;
-function stopTimers(){ if(tmr){ clearTimeout(tmr); tmr=null; } if(R&&R.blitzTick){ clearInterval(R.blitzTick); } document.querySelectorAll(".fb,.scrim").forEach(e=>e.remove()); }
+function stopTimers(){ if(tmr){ clearTimeout(tmr); tmr=null; } if(R&&R.blitzTick){ clearInterval(R.blitzTick); R.blitzTick=null; } document.querySelectorAll(".fb,.scrim,.defpop").forEach(e=>e.remove()); }
 const mult = c => c>=10?4:c>=6?3:c>=3?2:1;
 function startRound(ui){
   stopTimers();
   R={mode:"unit", ui, ch:buildRound(ui), i:0, hearts:3, score:0, combo:0, best:0, correct:0, answered:0, missed:[], t0:Date.now()};
   view="round"; renderCh();
 }
+function startReview(){
+  stopTimers();
+  const ch=buildReview(); if(!ch.length) return home();
+  R={mode:"review", relaxed:true, ch, i:0, hearts:3, score:0, combo:0, best:0, correct:0, answered:0, missed:[], before:trickyItems().length, clearedBefore:G.cleared, t0:Date.now()};
+  view="round"; renderCh();
+}
 function hud(){
   const blitz=R.mode==="blitz";
   return `<div class="hud">
     <button class="quit" id="quit" aria-label="Quit">${I.x}</button>
-    ${blitz?`<div class="rprog"><i id="btime" style="width:100%"></i></div>`:`<div class="rprog"><i style="width:${R.i/R.ch.length*100}%"></i></div>
-    <div class="hearts" id="hearts">${[0,1,2].map(n=>`<span class="${n<R.hearts?"":"lost"}">${I.heart(n<R.hearts)}</span>`).join("")}</div>`}
+    ${blitz?`<div class="rprog"><i id="btime" style="width:100%"></i></div>`:`<div class="rprog"><i style="width:${R.i/R.ch.length*100}%"></i></div>`}
+    ${R.relaxed?`<div class="relaxtag">Review</div>`:blitz?"":`<div class="hearts" id="hearts">${[0,1,2].map(n=>`<span class="${n<R.hearts?"":"lost"}">${I.heart(n<R.hearts)}</span>`).join("")}</div>`}
   </div>
   <div class="scorebox"><div class="score num" id="score">${fmt(R.score)}<small>pts</small></div>
     <div class="combo ${R.combo>=3?"on":""}" id="combo">${I.bolt}<span id="comboTxt">x${mult(R.combo)}</span></div></div>
-  ${blitz?"":`<div class="timer"><i id="tbar"></i></div>`}`;
+  ${blitz||R.relaxed?"":`<div class="timer"><i id="tbar"></i></div>`}`;
 }
-function startTimer(sec, onOut){
-  const bar=document.getElementById("tbar"); R.qStart=Date.now(); R.qLimit=sec*1000;
-  if(bar){ bar.style.transition="none"; bar.style.width="100%"; bar.offsetWidth; bar.style.transition=`width ${sec}s linear`; bar.style.width="0%";
-    setTimeout(()=>bar&&bar.classList.add("low"), sec*700); }
+/* question timer that can pause while a mistake is explained */
+function runTimer(ms){
+  const bar=document.getElementById("tbar");
+  R.tEnd=Date.now()+ms;
+  if(bar){ const from=ms/R.tTotal*100; bar.style.transition="none"; bar.style.width=from+"%"; bar.offsetWidth;
+    bar.style.transition=`width ${ms/1000}s linear`; bar.style.width="0%"; bar.classList.toggle("low", from<30);
+    clearTimeout(R.lowT); R.lowT=setTimeout(()=>bar.classList.add("low"), Math.max(0, ms-R.tTotal*0.3)); }
   if(tmr) clearTimeout(tmr);
-  tmr=setTimeout(()=>{ tmr=null; onOut(); }, sec*1000);
+  tmr=setTimeout(()=>{ tmr=null; R.tLeft=0; const f=R.tOut; R.tOut=null; f&&f(); }, ms);
 }
-function freezeTimer(){ if(tmr){ clearTimeout(tmr); tmr=null; } const bar=document.getElementById("tbar"); if(bar){ const w=getComputedStyle(bar).width; bar.style.transition="none"; bar.style.width=w; } }
-const speedFrac = () => R.qLimit ? Math.max(0, 1-(Date.now()-R.qStart)/R.qLimit) : 0;
+function startTimer(sec, onOut){ if(R.relaxed||R.mode==="blitz"){ R.tTotal=0; return; } R.tTotal=sec*1000; R.tOut=onOut; runTimer(R.tTotal); }
+function pauseTimer(){
+  if(!tmr) return; clearTimeout(tmr); tmr=null; clearTimeout(R.lowT);
+  R.tLeft=Math.max(0,R.tEnd-Date.now());
+  const bar=document.getElementById("tbar"); if(bar){ const w=getComputedStyle(bar).width; bar.style.transition="none"; bar.style.width=w; }
+}
+function resumeTimer(){ if(R && R.tOut && R.tLeft>0 && !tmr) runTimer(R.tLeft); }
+function freezeTimer(){ pauseTimer(); if(R) R.tOut=null; }
+const speedFrac = () => { if(!R.tTotal) return R.mode==="blitz"?1:0.5; const left = tmr ? R.tEnd-Date.now() : (R.tLeft||0); return Math.max(0, left/R.tTotal); };
 function setScore(){ const s=document.getElementById("score"); if(s) s.innerHTML=`${fmt(R.score)}<small>pts</small>`;
   const c=document.getElementById("combo"); if(c){ c.classList.toggle("on", R.combo>=3); document.getElementById("comboTxt").textContent="x"+mult(R.combo); c.classList.remove("pulse"); void c.offsetWidth; if(R.combo>=3) c.classList.add("pulse"); } }
 function floater(txt){ const f=document.createElement("div"); f.className="floater num"; f.textContent=txt; document.body.appendChild(f); setTimeout(()=>f.remove(),900); }
-function gain(base){
+function gain(base, it){
   R.combo++; R.best=Math.max(R.best,R.combo); R.correct++; R.answered++;
   const pts=Math.round(base*mult(R.combo)); R.score+=pts; floater("+"+pts); setScore();
+  noteAnswer(it, true);
   return pts;
 }
-function loseHeart(it){
+function miss(it){
   R.combo=0; R.answered++;
-  if(it && !R.missed.includes(it)) R.missed.push(it);
-  if(it) G.miss[it.key]=(G.miss[it.key]||0)+1;
-  if(R.mode==="blitz"){ R.endAt-=5000; floater("−5 s"); setScore(); return; }
+  if(it){ if(!R.missed.includes(it)) R.missed.push(it); noteAnswer(it, false); }
+  if(R.mode==="blitz"){ R.endAt-=3000; floater("−3 s"); setScore(); return; }
+  if(R.relaxed){ setScore(); return; }
   R.hearts--; setScore();
   const h=document.getElementById("hearts"); if(h){ const sp=h.children[R.hearts]; if(sp){ sp.classList.add("lost","hit"); sp.innerHTML=I.heart(false); } }
 }
-function credit(it){ if(it && G.miss[it.key]) G.miss[it.key]=Math.max(0,G.miss[it.key]-1); }
 function next(){
-  document.querySelectorAll(".fb").forEach(e=>e.remove());
+  document.querySelectorAll(".fb,.defpop").forEach(e=>e.remove());
   if(R.mode==="blitz"){ renderCh(); return; }
   if(R.hearts<=0) return endRound(false);
   R.i++; R.i<R.ch.length ? renderCh() : endRound(true);
 }
-function showWrong(ansHTML, msg="Not quite"){
+/* explain a mistake: the right answer, and what the wrong pick actually means. Waits for Continue. */
+const line = (cls, html) => `<div class="fbl ${cls}"><i>${cls==="ok"?"✓":"✗"}</i><div>${html}</div></div>`;
+const pair = (it) => `<span class="mk">${it.kind==="s"?defLine(it.lat):`<span class="def" data-def="${esc(it.lat)}">${esc(it.lat)}</span>`}</span> <span class="cy">${esc(it.cyr)}</span> <span class="eq">means</span> <b>${esc(it.en)}</b>`;
+function explain(title, lines, onContinue){
+  if(R.mode==="blitz"){ R.pausedLeft=R.endAt-Date.now(); clearInterval(R.blitzTick); R.blitzTick=null; }
   const fb=document.createElement("div"); fb.className="fb no";
-  fb.innerHTML=`<div class="in"><h3>${esc(msg)}</h3><p class="ans">${ansHTML}</p><button class="btn danger" id="cont">${R.hearts<=0?"See results":"Continue"}</button></div>`;
+  const last = R.mode!=="blitz" && !R.relaxed && R.hearts<=0;
+  fb.innerHTML=`<div class="in"><h3>${esc(title)}</h3>${lines.join("")}<p class="tip">Tap any Macedonian word to see its meaning.</p><button class="btn danger" id="cont">${last?"See results":"Continue"}</button></div>`;
   document.body.appendChild(fb); applyCyr();
-  const b=fb.querySelector("#cont"); b.focus(); b.onclick=next;
+  const b=fb.querySelector("#cont"); b.focus();
+  b.onclick=()=>{ fb.remove(); document.querySelectorAll(".defpop").forEach(p=>p.remove());
+    if(R.mode==="blitz"){ R.endAt=Date.now()+R.pausedLeft; R.pausedLeft=null; startBlitzClock(); }
+    (onContinue||next)(); };
 }
-const answerLine = it => `${mk(it)} <span style="font-weight:700;color:var(--muted)">= ${esc(it.en)}</span>`;
 
 function renderCh(){
   if(R.mode==="blitz"){ R.cur = blitzCh(); }
   const c = R.mode==="blitz" ? R.cur : R.ch[R.i];
-  const R_={pickEn:rPick, pickMk:rPick, tf:rTF, cloze:rCloze, build:rBuild, match:rMatch}[c.type];
+  const fn={pickEn:rPick, pickMk:rPick, cloze:rCloze, build:rBuild, match:rMatch}[c.type];
   app.innerHTML = hud() + `<div id="stage"></div>`;
   document.getElementById("quit").onclick = ()=>{ if(R.answered) endRound(false, true); else home(); };
-  R_(c, document.getElementById("stage"));
+  fn(c, document.getElementById("stage"));
   applyCyr();
 }
 
 /* pick the meaning / pick the Macedonian */
 function rPick(c, st){
   const it=c.it, toEn=c.type==="pickEn", sent=it.kind==="s";
+  // a single-word prompt is the question itself, so only sentence prompts get tap-to-define
+  const prompt = toEn ? `<div class="big ${sent?"s":""}"><span class="mk">${sent?defLine(it.lat):esc(it.lat)}</span><span class="cy">${esc(it.cyr)}</span></div>` : `<div class="big ${sent?"s":""}">${esc(it.en)}</div>`;
   st.innerHTML=`<p class="qlabel">${toEn?"What does this mean?":"Pick the Macedonian"}</p>
-    <div class="qcard">${toEn?`<div class="big ${sent?"s":""}">${mk(it)}</div>`:`<div class="big ${sent?"s":""}">${esc(it.en)}</div>`}</div>
+    <div class="qcard">${prompt}</div>
     <div class="opts ${sent?"one":""}">${c.opts.map((o,k)=>`<button class="opt" data-k="${k}">${toEn?esc(o.en):mk(o)}</button>`).join("")}</div>`;
   const btns=[...st.querySelectorAll(".opt")];
-  const done=(k)=>{
-    freezeTimer(); btns.forEach(b=>b.disabled=true);
+  const done=k=>{
+    const frac=speedFrac(); freezeTimer(); btns.forEach(b=>b.disabled=true);
     const right=c.opts.indexOf(it), ok=k===right;
     btns[right].classList.add("right"); btns.forEach((b,i)=>{ if(i!==right&&i!==k) b.classList.add("dim"); });
-    if(ok){ gain(100+50*speedFrac()); credit(it); setTimeout(next, R.mode==="blitz"?350:650); }
-    else { if(k>=0) btns[k].classList.add("wrong"); loseHeart(it); if(R.mode==="blitz") setTimeout(next, 900); else showWrong(answerLine(it), k<0?"Time's up":"Not quite"); }
-  };
-  btns.forEach((b,k)=>b.onclick=()=>done(k));
-  if(R.mode!=="blitz") startTimer(c.limit, ()=>done(-1));
-}
-/* true or false */
-function rTF(c, st){
-  const it=c.it, s=c.shown;
-  st.innerHTML=`<p class="qlabel">True or false?</p>
-    <div class="qcard"><div class="big">${mk(it)}</div><div class="eq">means</div><div class="big s" style="color:var(--muted)">${esc(s.en)}</div></div>
-    <div class="tf"><button class="opt" data-v="1">True</button><button class="opt" data-v="0">False</button></div>`;
-  const btns=[...st.querySelectorAll(".opt")];
-  const done=v=>{
-    freezeTimer(); btns.forEach(b=>b.disabled=true);
-    const ok = v===null ? false : (v===c.truth);
-    const rightBtn = btns[c.truth?0:1]; rightBtn.classList.add("right");
-    if(ok){ gain(80+40*speedFrac()); credit(it); setTimeout(next, R.mode==="blitz"?350:600); }
-    else { if(v!==null) btns[v?0:1].classList.add("wrong"); loseHeart(it); if(R.mode==="blitz") setTimeout(next, 900); else showWrong(answerLine(it), v===null?"Time's up":"Not quite"); }
-  };
-  btns.forEach(b=>b.onclick=()=>done(b.dataset.v==="1"));
-  if(R.mode!=="blitz") startTimer(c.limit, ()=>done(null));
-}
-/* finish the sentence */
-function rCloze(c, st){
-  const it=c.it, z=c.cloze;
-  const line=(T,end,fill)=>T.map((t,i)=>i===z.gap?`<span class="gap ${fill?"ok":""}">${fill?esc(fill):"&nbsp;"}</span>`:esc(t)).join(" ")+esc(end);
-  st.innerHTML=`<p class="qlabel">Finish the sentence</p>
-    <div class="qcard"><div class="big s"><span class="mk" id="zl">${line(z.L,z.end)}</span><span class="cy">${line(z.C,z.endC)}</span></div><div class="en">${esc(it.en)}</div></div>
-    <div class="opts">${z.opts.map((o,k)=>`<button class="opt" data-k="${k}"><span class="mk">${esc(o.lat)}</span><span class="cy">${esc(o.cyr)}</span></button>`).join("")}</div>`;
-  const btns=[...st.querySelectorAll(".opt")];
-  const done=k=>{
-    freezeTimer(); btns.forEach(b=>b.disabled=true);
-    const right=z.opts.indexOf(z.ans), ok=k===right;
-    btns[right].classList.add("right"); document.getElementById("zl").innerHTML=line(z.L,z.end,z.L[z.gap]);
-    if(ok){ gain(120+60*speedFrac()); credit(it); setTimeout(next, 900); }
-    else { if(k>=0) btns[k].classList.add("wrong"); loseHeart(it); showWrong(answerLine(it), k<0?"Time's up":"Not quite"); }
+    if(ok){ gain(100+50*frac, it); setTimeout(next, R.mode==="blitz"?350:650); return; }
+    if(k>=0) btns[k].classList.add("wrong");
+    miss(it);
+    const lines=[line("ok", pair(it))];
+    if(k>=0){ const o=c.opts[k]; lines.push(line("no", toEn?`You picked <b>${esc(o.en)}</b>. In Macedonian that's ${`<span class="mk"><span class="def" data-def="${esc(o.lat)}">${esc(o.lat)}</span></span>`} <span class="cy">${esc(o.cyr)}</span>`:`You picked ${pair(o)}`)); }
+    explain(k<0?"Time's up":"Not quite", lines);
   };
   btns.forEach((b,k)=>b.onclick=()=>done(k));
   startTimer(c.limit, ()=>done(-1));
 }
-/* build the sentence */
+/* finish the sentence */
+function rCloze(c, st){
+  const it=c.it, z=c.cloze;
+  const lineHTML=(T,end,fill,tappable)=>T.map((t,i)=>i===z.gap?`<span class="gap ${fill?"ok":""}">${fill?esc(fill):"&nbsp;"}</span>`:(tappable&&meaningOf(t)?`<span class="def" data-def="${esc(t)}">${esc(t)}</span>`:esc(t))).join(" ")+esc(end);
+  st.innerHTML=`<p class="qlabel">Finish the sentence</p>
+    <div class="qcard"><div class="big s"><span class="mk" id="zl">${lineHTML(z.L,z.end,null,true)}</span><span class="cy">${lineHTML(z.C,z.endC)}</span></div><div class="en">${esc(it.en)}</div></div>
+    <div class="opts">${z.opts.map((o,k)=>`<button class="opt" data-k="${k}"><span class="mk">${esc(o.lat)}</span><span class="cy">${esc(o.cyr)}</span></button>`).join("")}</div>`;
+  const btns=[...st.querySelectorAll(".opt")];
+  const done=k=>{
+    const frac=speedFrac(); freezeTimer(); btns.forEach(b=>b.disabled=true);
+    const right=z.opts.indexOf(z.ans), ok=k===right;
+    btns[right].classList.add("right"); document.getElementById("zl").innerHTML=lineHTML(z.L,z.end,z.L[z.gap],true);
+    if(ok){ gain(120+60*frac, it); setTimeout(next, 1000); return; }
+    if(k>=0) btns[k].classList.add("wrong");
+    miss(it);
+    const a=z.ans, am=meaningOf(a.lat), lines=[line("ok", `The missing word is <span class="mk">${esc(a.lat)}</span> <span class="cy">${esc(a.cyr)}</span>${am?` <span class="eq">means</span> <b>${esc(am)}</b>`:""}`)];
+    if(k>=0){ const o=z.opts[k], om=meaningOf(o.lat); lines.push(line("no", `You picked <span class="mk">${esc(o.lat)}</span> <span class="cy">${esc(o.cyr)}</span>${om?` <span class="eq">means</span> <b>${esc(om)}</b>`:""}`)); }
+    lines.push(line("ok", pair(it)));
+    explain(k<0?"Time's up":"Not quite", lines);
+  };
+  btns.forEach((b,k)=>b.onclick=()=>done(k));
+  startTimer(c.limit, ()=>done(-1));
+}
+/* tap to write the sentence */
 function rBuild(c, st){
   const it=c.it, chosen=[];
-  st.innerHTML=`<p class="qlabel">Build it in Macedonian</p>
+  st.innerHTML=`<p class="qlabel">Tap to write it in Macedonian</p>
     <div class="qcard"><div class="big s">${esc(it.en)}</div></div>
     <div class="line" id="line"></div>
     <div class="bank" id="bank">${c.tiles.map(t=>`<button class="wt" data-id="${t.id}"><span class="mk">${esc(t.lat)}</span><span class="cy">${esc(t.cyr)}</span></button>`).join("")}</div>
     <button class="btn" id="check" disabled>Check</button>`;
-  const line=st.querySelector("#line"), check=st.querySelector("#check");
-  const draw=()=>{ line.innerHTML=chosen.map(id=>{const t=c.tiles[id]; return `<button class="wt" data-back="${id}"><span class="mk">${esc(t.lat)}</span><span class="cy">${esc(t.cyr)}</span></button>`;}).join(""); applyCyr();
-    line.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{ const id=+b.dataset.back; chosen.splice(chosen.indexOf(id),1); st.querySelector(`#bank [data-id="${id}"]`).classList.remove("used"); draw(); });
+  const lineEl=st.querySelector("#line"), check=st.querySelector("#check");
+  const draw=()=>{ lineEl.innerHTML=chosen.map(id=>{const t=c.tiles[id]; return `<button class="wt" data-back="${id}"><span class="mk">${esc(t.lat)}</span><span class="cy">${esc(t.cyr)}</span></button>`;}).join(""); applyCyr();
+    lineEl.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{ const id=+b.dataset.back; chosen.splice(chosen.indexOf(id),1); st.querySelector(`#bank [data-id="${id}"]`).classList.remove("used"); draw(); });
     check.disabled=!chosen.length; };
   st.querySelectorAll("#bank .wt").forEach(b=>b.onclick=()=>{ if(b.classList.contains("used")) return; chosen.push(+b.dataset.id); b.classList.add("used"); draw(); });
   const done=timeout=>{
-    freezeTimer(); st.querySelectorAll(".wt").forEach(b=>b.disabled=true); check.disabled=true;
-    const ok=!timeout && chosen.map(id=>c.tiles[id].lat.toLowerCase()).join(" ")===toks(it.lat).map(t=>t.toLowerCase()).join(" ");
-    if(ok){ gain(150+75*speedFrac()); credit(it); line.querySelectorAll(".wt").forEach(w=>{w.style.background="var(--good)";w.style.color="#fff";}); setTimeout(next, 900); }
-    else { loseHeart(it); showWrong(answerLine(it), timeout?"Time's up":"Not quite"); }
+    const frac=speedFrac(); freezeTimer(); st.querySelectorAll(".wt").forEach(b=>b.disabled=true); check.disabled=true;
+    const built=chosen.map(id=>c.tiles[id].lat);
+    const ok=!timeout && built.map(t=>t.toLowerCase()).join(" ")===toks(it.lat).map(t=>t.toLowerCase()).join(" ");
+    if(ok){ gain(150+75*frac, it); lineEl.querySelectorAll(".wt").forEach(w=>w.classList.add("good")); setTimeout(next, 1000); return; }
+    miss(it);
+    const lines=[line("ok", pair(it))];
+    if(built.length) lines.push(line("no", `You wrote <span class="mk">${defLine(built.join(" "))}</span>`));
+    explain(timeout?"Time's up":"Not quite", lines);
   };
   check.onclick=()=>done(false);
   startTimer(c.limit, ()=>done(true));
 }
-/* match pairs */
+/* match the words */
 function rMatch(c, st){
-  const g=c.group, s={sel:null, left:g.length, t0:Date.now(), over:false};
-  st.innerHTML=`<p class="qlabel">Match the pairs</p>
+  const g=c.group, s={sel:null, left:g.length, t0:Date.now(), over:false, bad:new Set()};
+  st.innerHTML=`<p class="qlabel">Match the words</p>
     <div class="board"><div class="col">${shuffle(g).map(it=>`<button class="tile" data-side="L" data-key="${it.key}">${mk(it)}</button>`).join("")}</div>
     <div class="col">${shuffle(g).map(it=>`<button class="tile" data-side="R" data-key="${it.key}">${esc(it.en)}</button>`).join("")}</div></div>`;
   const finish=timeout=>{
     if(s.over) return; s.over=true; freezeTimer();
+    if(timeout){
+      const leftItems=g.filter(it=>!st.querySelector(`.tile[data-side="L"][data-key="${it.key}"]`).classList.contains("ok"));
+      leftItems.forEach(it=>{ R.missed.includes(it)||R.missed.push(it); noteAnswer(it,false); });
+      miss(null);
+      explain("Time's up", leftItems.map(it=>line("ok", pair(it))));
+      return;
+    }
     const secs=(Date.now()-s.t0)/1000;
-    if(timeout){ loseHeart(null); showWrong(`${s.left} pair${s.left===1?"":"s"} left unmatched.`, "Time's up"); return; }
-    const bonus=Math.round(Math.max(0, c.limit-secs)*10);
-    if(bonus){ R.score+=bonus; setTimeout(()=>floater("Speed +"+bonus), 250); setScore(); }
-    if(!G.fastestMatch || secs<G.fastestMatch) G.fastestMatch=Math.round(secs*10)/10;
-    setTimeout(next, 900);
+    if(!R.relaxed){
+      const bonus=Math.round(Math.max(0, c.limit-secs)*10);
+      if(bonus){ R.score+=bonus; setTimeout(()=>floater("Speed +"+bonus), 250); setScore(); }
+      if(!s.bad.size && (!G.fastestMatch || secs<G.fastestMatch)) G.fastestMatch=Math.round(secs*10)/10;
+    }
+    setTimeout(next, 800);
   };
   st.querySelectorAll(".tile").forEach(t=>t.onclick=()=>{
     if(s.over || t.classList.contains("ok")) return;
     if(!s.sel || s.sel.dataset.side===t.dataset.side){ if(s.sel) s.sel.classList.remove("sel"); s.sel = s.sel===t?null:t; if(s.sel) t.classList.add("sel"); return; }
     const a=s.sel; s.sel=null; a.classList.remove("sel");
     if(a.dataset.key===t.dataset.key){
-      [a,t].forEach(x=>x.classList.add("ok")); s.left--; gain(50); credit(ITEM[t.dataset.key]);
+      [a,t].forEach(x=>x.classList.add("ok")); s.left--;
+      const it=ITEM[t.dataset.key];
+      if(s.bad.has(it.key)){ R.combo++; R.best=Math.max(R.best,R.combo); setScore(); } else gain(50, it);
       if(!s.left) finish(false);
     } else {
       [a,t].forEach(x=>{ x.classList.remove("bad"); void x.offsetWidth; x.classList.add("bad"); setTimeout(()=>x.classList.remove("bad"),400); });
-      const lk=(a.dataset.side==="L"?a:t).dataset.key; loseHeart(ITEM[lk]);
-      if(R.hearts<=0){ s.over=true; freezeTimer(); showWrong(answerLine(ITEM[lk]), "Out of hearts"); }
+      const mkTile=a.dataset.side==="L"?a:t, enTile=a.dataset.side==="L"?t:a;
+      const A=ITEM[mkTile.dataset.key], B=ITEM[enTile.dataset.key];
+      s.bad.add(A.key); miss(A);
+      pauseTimer();
+      explain(R.hearts<=0 && !R.relaxed ? "Out of hearts" : "Not a pair", [line("no", pair(A)), line("no", `<b>${esc(B.en)}</b> in Macedonian is <span class="mk"><span class="def" data-def="${esc(B.lat)}">${esc(B.lat)}</span></span> <span class="cy">${esc(B.cyr)}</span>`)],
+        ()=>{ if(!R.relaxed && R.hearts<=0){ s.over=true; return endRound(false); } resumeTimer(); });
     }
   });
   startTimer(c.limit, ()=>finish(true));
@@ -912,28 +1171,31 @@ function rMatch(c, st){
 
 /* ================= Blitz ================= */
 function blitzCh(){
-  const pool=ITEMS.filter(x=>x.kind==="w" && (unlocked(x.unit)));
+  const pool=ITEMS.filter(x=>x.kind==="w" && unlocked(x.unit));
   const it = Math.random()<.35 ? weakFirst(pool)[0] : pick(pool);
-  return makeCh(pick(["pickEn","pickEn","pickMk","tf"]), it);
+  return makeCh(pick(["pickEn","pickEn","pickMk"]), it);
+}
+function startBlitzClock(){
+  if(R.blitzTick) clearInterval(R.blitzTick);
+  R.blitzTick=setInterval(()=>{
+    const left=Math.max(0,R.endAt-Date.now()), b=document.getElementById("btime");
+    if(b){ b.style.width=(left/600)+"%"; b.style.background = left<10000?"#ff7a4d":"var(--card)"; }
+    if(left<=0){ clearInterval(R.blitzTick); R.blitzTick=null; endRound(true); }
+  }, 100);
 }
 function startBlitz(){
   stopTimers();
   R={mode:"blitz", hearts:3, score:0, combo:0, best:0, correct:0, answered:0, missed:[], endAt:Date.now()+60000, t0:Date.now()};
-  view="round"; renderCh();
-  R.blitzTick=setInterval(()=>{
-    const left=Math.max(0,R.endAt-Date.now()), b=document.getElementById("btime");
-    if(b){ b.style.width=(left/600)+"%"; b.style.background = left<10000?"#ff7a4d":"var(--card)"; }
-    if(left<=0){ clearInterval(R.blitzTick); endRound(true); }
-  }, 100);
+  view="round"; renderCh(); startBlitzClock();
 }
 
 /* ================= Results ================= */
 function endRound(success, quit=false){
-  stopTimers(); if(R.blitzTick) clearInterval(R.blitzTick);
+  stopTimers();
   view="result";
   const Lb=levelOf(G.xp);
   G.xp+=R.score; G.bestCombo=Math.max(G.bestCombo,R.best);
-  if(R.answered) G.days[dayKey()]=(G.days[dayKey()]||0)+1;
+  if(R.answered){ G.days[dayKey()]=(G.days[dayKey()]||0)+1; G.bestStreak=Math.max(G.bestStreak, streakDays()); }
   let stars=0, unlockedNew=null, newBest=false;
   if(R.mode==="unit"){
     const u=UNITS[R.ui], rec=U(u.id); rec.plays++;
@@ -944,41 +1206,74 @@ function endRound(success, quit=false){
       if(!wasOpen && unlocked(R.ui+1)) unlockedNew=UNITS[R.ui+1];
     }
     if(R.score>rec.best){ rec.best=R.score; newBest=rec.plays>1; }
-  } else {
+  } else if(R.mode==="blitz"){
     if(R.score>G.blitzBest){ newBest=G.blitzBest>0; G.blitzBest=R.score; }
   }
   const La=levelOf(G.xp), got=checkBadges(); save();
   const acc = R.answered ? Math.round(R.correct/R.answered*100) : 0;
-  const head = R.mode==="blitz" ? ["Vreme!","Time's up"] : quit ? ["Pauza","Round stopped"] : success ? (R.hearts===3?["Sovrsheno!","Perfect round"]:["Bravo!","Round cleared"]) : ["Ajde pak!","Out of hearts. Try again"];
+  const clearedNow = R.mode==="review" ? G.cleared-R.clearedBefore : 0;
+  const head = R.mode==="blitz" ? ["Vreme!","Time's up"]
+    : R.mode==="review" ? ["Bravo!", clearedNow?`${clearedNow} word${clearedNow===1?"":"s"} cleared from your tricky list`:"Review done"]
+    : quit ? ["Pauza","Round stopped"] : success ? (R.hearts===3?["Sovrsheno!","Perfect round"]:["Bravo!","Round cleared"]) : ["Ajde pak!","Out of hearts. Try again"];
   const ni = R.mode==="unit" ? nextUnit() : null;
+  const label = R.mode==="unit" ? esc(UNITS[R.ui].name) : R.mode==="blitz" ? "Blitz" : "Tricky words";
+  const trLeft = trickyItems().length;
   app.innerHTML=`<div class="res">
-    <div><h1>${head[0]}</h1><p class="sub">${head[1]}${R.mode==="unit"?` · ${esc(UNITS[R.ui].name)}`:" · Blitz"}</p></div>
+    <div><h1>${head[0]}</h1><p class="sub">${head[1]} · ${label}</p></div>
     ${R.mode==="unit"?`<div class="bigstars">${[1,2,3].map(n=>`<span class="s${n} ${stars>=n?"pop":""}" style="animation-delay:${n*0.18}s">${I.star(stars>=n)}</span>`).join("")}</div>`:""}
     <div class="rcard">
       <div style="text-align:center"><div class="score num" style="font-size:2.4rem;color:var(--ink)" id="countup">0</div>
         <div style="font-weight:800;color:var(--muted)">${newBest?"New best score!":R.mode==="blitz"?`Best ${fmt(G.blitzBest)}`:"points"}</div></div>
-      <div class="rstats"><div class="num">${acc}%<span>Accuracy</span></div><div class="num">${R.best}<span>Best combo</span></div><div class="num">${La}<span>Level</span></div></div>
+      <div class="rstats"><div class="num">${acc}%<span>Accuracy</span></div><div class="num">${R.best}<span>Best combo</span></div><div class="num">${streakDays()}<span>Day streak</span></div></div>
       ${La>Lb?`<div class="lvup">Level up! You're now level ${La} · ${titleOf(La)[1]} (${titleOf(La)[2]})</div>`:""}
       ${unlockedNew?`<div class="unlock">New unit unlocked: ${esc(unlockedNew.name)}</div>`:""}
       ${got.length?`<div class="newb">${got.map(b=>`<div>${I[b.ic].replace(/#2b1608/g,"#c98b00")}${esc(b.name)}</div>`).join("")}</div>`:""}
-      ${R.missed.length?`<div class="miss"><h3>Words to remember</h3><ul>${R.missed.map(it=>`<li><div>${mk(it)}</div><div class="en">${esc(it.en)}</div></li>`).join("")}</ul></div>`:""}
+      ${R.missed.length?`<div class="miss"><h3>Added to your tricky words</h3><ul>${R.missed.map(it=>`<li><div>${mk(it)}</div><div class="en">${esc(it.en)}</div></li>`).join("")}</ul></div>`:""}
     </div>
     <div class="acts">
       ${R.mode==="blitz"?`<button class="btn" id="again">Play Blitz again</button>`
+        : R.mode==="review" ? (trLeft?`<button class="btn" id="again">Review again (${trLeft} left)</button>`:"")
         : success&&!quit ? (ni!==R.ui?`<button class="btn" id="nextU">Next: ${esc(UNITS[ni].name)}</button><button class="btn cream" id="again">Replay for ${stars<3?"3 stars":"a higher score"}</button>`:`<button class="btn" id="again">Play again${stars<3?" for 3 stars":""}</button>`)
         : `<button class="btn" id="again">Try again</button>`}
+      ${R.mode!=="review" && trLeft ? `<button class="btn cream" id="rev">Review tricky words (${trLeft})</button>`:""}
       <button class="btn cream" id="home">Map</button>
     </div></div>`;
   applyCyr();
   const ui=R.ui, mode=R.mode;
-  document.getElementById("again").onclick=()=> mode==="blitz"?startBlitz():startRound(ui);
-  const nx=document.getElementById("nextU"); if(nx) nx.onclick=()=>startRound(ni);
+  const ag=document.getElementById("again"); if(ag) ag.onclick=()=> mode==="blitz"?startBlitz():mode==="review"?startReview():startRound(ui);
+  const nx=document.getElementById("nextU"); if(nx) nx.onclick=()=>enterUnit(ni);
+  const rv=document.getElementById("rev"); if(rv) rv.onclick=startReview;
   document.getElementById("home").onclick=home;
-  // count the score up
   const el=document.getElementById("countup"), target=R.score, t0=performance.now();
   const step=t=>{ const p=Math.min(1,(t-t0)/900); el.textContent=fmt(target*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); };
   requestAnimationFrame(step);
   got.forEach((b,i)=>setTimeout(()=>toast(b), 600+i*1200));
+}
+
+/* ================= My words ================= */
+let wordsFilter="all";
+function wordsView(){
+  view="words"; stopTimers();
+  const counts={known:0, learning:0, tricky:0, new:0}; ITEMS.forEach(it=>counts[status(it)]++);
+  const show = it => wordsFilter==="all" || status(it)===wordsFilter;
+  const tr=trickyItems().length;
+  app.innerHTML=`<div class="ph"><button class="quit" id="back" aria-label="Back">${I.x}</button><h1>My words</h1></div>
+    <div class="vgrid">
+      <button class="vt known ${wordsFilter==="known"?"on":""}" data-f="known"><b class="num">${counts.known}</b><span>Known</span></button>
+      <button class="vt learning ${wordsFilter==="learning"?"on":""}" data-f="learning"><b class="num">${counts.learning}</b><span>Learning</span></button>
+      <button class="vt tricky ${wordsFilter==="tricky"?"on":""}" data-f="tricky"><b class="num">${counts.tricky}</b><span>Tricky</span></button>
+      <button class="vt new ${wordsFilter==="new"?"on":""}" data-f="new"><b class="num">${counts.new}</b><span>Not yet</span></button>
+    </div>
+    <div class="vbar" aria-label="${counts.known} of ${ITEMS.length} known">${["known","learning","tricky"].map(k=>`<i class="${k}" style="width:${counts[k]/ITEMS.length*100}%"></i>`).join("")}</div>
+    <p class="vnote">${counts.known} of ${ITEMS.length} words and phrases known. A word counts as known after 3 right answers with no recent misses.${wordsFilter!=="all"?` <button class="linkbtn" data-f="all">Show all</button>`:""}</p>
+    ${tr?`<button class="btn" id="rev" style="margin-bottom:14px">Review tricky words (${tr})</button>`:""}
+    ${UNITS.map(u=>{ const list=u.items.filter(show); if(!list.length) return "";
+      return `<div class="panel"><h2>${esc(u.name)}</h2><ul class="wl">${list.map(it=>{ const v=G.vocab[it.key]; const st=status(it);
+        return `<li><div>${mk(it)}</div><div class="en">${esc(it.en)}<i class="st ${st}">${st==="new"?"not yet":st}${v?` · ${v.c}✓ ${v.w}✗`:""}</i></div></li>`; }).join("")}</ul></div>`; }).join("") || `<p class="vnote">Nothing here yet.</p>`}`;
+  applyCyr();
+  document.getElementById("back").onclick=home;
+  app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{ wordsFilter = wordsFilter===b.dataset.f ? "all" : b.dataset.f; wordsView(); });
+  const rv=document.getElementById("rev"); if(rv) rv.onclick=startReview;
 }
 
 /* ================= Badges screen ================= */
@@ -992,7 +1287,7 @@ function badgesView(){
 /* ================= Settings ================= */
 function settingsView(msg){
   view="settings";
-  const standalone = window.matchMedia && matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  const standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
   app.innerHTML=`<div class="ph"><button class="quit" id="back" aria-label="Back">${I.x}</button><h1>Settings</h1></div>
     <div class="panel"><div class="srow"><div><b>Show Cyrillic</b><p>Small Cyrillic under each Macedonian word.</p></div><button class="switch" id="cyr" aria-pressed="${G.cyr}" aria-label="Show Cyrillic"></button></div></div>
     <div class="panel"><div class="srow"><div><b>Unlock every unit</b><p>Skip ahead on the map without earning stars first.</p></div><button class="switch" id="all" aria-pressed="${G.openAll}" aria-label="Unlock every unit"></button></div></div>
@@ -1006,7 +1301,7 @@ function settingsView(msg){
       <button class="btn cream" id="doRestore">Restore progress</button>
       ${msg?`<p class="note ${msg[0]}">${esc(msg[1])}</p>`:""}
     </div>
-    <div class="panel" id="resetBox"><h2>Start over</h2><p>Erase your level, stars, badges and scores on this device.</p><button class="btn cream" id="reset">Reset progress</button></div>`;
+    <div class="panel" id="resetBox"><h2>Start over</h2><p>Erase your level, stars, streak, words and badges on this device.</p><button class="btn cream" id="reset">Reset progress</button></div>`;
   document.getElementById("back").onclick=home;
   document.getElementById("cyr").onclick=e=>{ G.cyr=!G.cyr; save(); e.currentTarget.setAttribute("aria-pressed",G.cyr); applyCyr(); };
   document.getElementById("all").onclick=e=>{ G.openAll=!G.openAll; save(); e.currentTarget.setAttribute("aria-pressed",G.openAll); };
@@ -1021,20 +1316,21 @@ function settingsView(msg){
     catch(e){ settingsView(["no","That code didn't work. Check that you pasted all of it."]); }
   };
   document.getElementById("reset").onclick=()=>{
-    document.getElementById("resetBox").innerHTML=`<h2>Erase everything?</h2><p>This can't be undone.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn cream" id="rNo">Keep it</button><button class="btn danger" id="rYes">Erase</button></div>`;
+    document.getElementById("resetBox").innerHTML=`<h2>Erase everything?</h2><p>This can't be undone.</p><div class="two"><button class="btn cream" id="rNo">Keep it</button><button class="btn danger" id="rYes">Erase</button></div>`;
     document.getElementById("rNo").onclick=()=>settingsView();
     document.getElementById("rYes").onclick=()=>{ G=fresh(); save(); applyCyr(); home(); };
   };
 }
 
-/* ================= Pause timers when the app is hidden ================= */
+/* ================= Pause clocks while the app is in the background ================= */
 document.addEventListener("visibilitychange", ()=>{
+  if(!R || view!=="round") return;
   if(document.visibilityState==="hidden"){
-    if(view==="round" && R && R.mode==="blitz"){ R.pausedLeft = R.endAt-Date.now(); }
-    if(tmr && view==="round"){ clearTimeout(tmr); tmr=null; R.resumeQ=true; }
-  } else if(view==="round" && R){
-    if(R.mode==="blitz" && R.pausedLeft!=null){ R.endAt=Date.now()+R.pausedLeft; R.pausedLeft=null; }
-    if(R.resumeQ){ R.resumeQ=false; renderCh(); }
+    if(R.mode==="blitz" && R.blitzTick){ R.bgLeft=R.endAt-Date.now(); clearInterval(R.blitzTick); R.blitzTick=null; }
+    if(tmr){ pauseTimer(); R.bgPaused=true; }
+  } else {
+    if(R.mode==="blitz" && R.bgLeft!=null){ R.endAt=Date.now()+R.bgLeft; R.bgLeft=null; startBlitzClock(); }
+    if(R.bgPaused){ R.bgPaused=false; resumeTimer(); }
   }
 });
 
